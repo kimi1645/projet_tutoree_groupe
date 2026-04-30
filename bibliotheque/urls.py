@@ -20,5 +20,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('authentification.urls')),
-    path('emprunt/', include("emprunts.urls")),#ajout de l'urls emprunts 
+    path('dashboard/', include('tableau_de_bord.urls')),
+    #path('livre/', include('livre.urls')),
+    #path('adherent/', include('adherent.urls')),
+    path('emprunt/', include('emprunts.urls')),
 ]

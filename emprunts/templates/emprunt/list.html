@@ -1,24 +1,49 @@
-
-<div class="w-full">
-  
+{% extends 'base.html' %}
+{% block title %}
+  Liste des emprunts
+{% endblock %}
+{% block content %}
+  <div class="w-full">
     <div>
       <a href="#">Nouvelle emprunt</a>
     </div>
-    <table class="space-y-4 w-full">
-
-    {% for emp in emprunt %}
-    <tr class="space-y-2"> 
-       <td>{{emp.ref_livre}}</td>
-       <td>{{emp.adherent}}</td>
-       <td>{{emp.bibliothecaire}}</td>
-       <td>{{emp.date_emprunt}}</td>
-       <td>{{emp.date_limite}}</td>
-       <td>{{emp.date_retour}}</td>
-       <td>{{emp.statut}}</td>
-       <td>{{emp.remarque}}</td>
-
-    </tr>
-    {% endfor %}
-
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <td>Réference</td>
+          <td>Emprunteur</td>
+          <td>Responsable</td>
+          <td>Date d'emprunt</td>
+          <td>Date de limite</td>
+          <td>Date de retour</td>
+          <td>Statut</td>
+          <td>Remarque</td>
+          <td>Actions</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% if emprunts %}
+          {% for emp in emprunts %}
+            <tr class="space-y-2">
+              <td>{{ emp.ref_livre }}</td>
+              <td>{{ emp.adherent }}</td>
+              <td>{{ emp.bibliothecaire }}</td>
+              <td>{{ emp.date_emprunt }}</td>
+              <td>{{ emp.date_limite }}</td>
+              <td>{{ emp.date_retour }}</td>
+              <td>{{ emp.statut }}</td>
+              <td>{{ emp.remarque }}</td>
+              <td>
+                <a href="#">Retourner</a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="9" class="text-center">Vous n'avez pas encore enregistrer des emprunts</td>
+          </tr>
+        {% endif %}
+      </tbody>
     </table>
-</div>
+  </div>
+{% endblock %}
