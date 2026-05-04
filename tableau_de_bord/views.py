@@ -9,8 +9,10 @@ from django.db.models import F, Avg, DurationField, ExpressionWrapper, Sum, Coun
 from django.db.models.functions import TruncMonth
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def index_dashboard(request):
     #Récuperation des quantité de livre par catégorie
     #.values('categorie') == regroupé par catégorie

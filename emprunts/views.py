@@ -49,7 +49,7 @@ def enregistrer_emprunt(request):
         })
 
 
-
+@login_required
 def retourner_emprunt(request, id):
     emprunt = get_object_or_404(Emprunt, id=id)
     if request.method == "POST":
@@ -70,7 +70,7 @@ def retourner_emprunt(request, id):
 
 
 
-
+@login_required
 def recherche(request):
     
     query = request.GET.get('q','').strip()
