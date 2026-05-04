@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from livres.models import Livre
 from .models import Emprunt
 from .forms import EmpruntForm, EnregistrementRetourEmprunt
-from datetime  import datetime
 
 @login_required
 def liste_emprunt(request):
