@@ -34,7 +34,7 @@
               <td>{{ emp.statut }}</td>
               <td>{{ emp.remarque }}</td>
               <td>
-                <a href="{% url 'retournerEmprunt' emp.id %}">Retourner</a>
+                <a href="{% url 'retournerEmprunt' emp.id %}" class="btn btn-outline-success">Retourner</a>
               </td>
             </tr>
           {% endfor %}
