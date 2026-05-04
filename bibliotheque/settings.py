@@ -147,5 +147,8 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 #on execute chaque jour à 8h00
 CRONJOBS = [
-    ('0 8 * * *', 'bibliotheque.tasks.envoyer_rappels')
+    #Minute Heure * * , tâche
+    ('0 8 * * *', 'bibliotheque.tasks.envoyer_rappels'),
+    ('0 12 * * *', 'bibliotheque.tasks.envoyer_rappels'),
+    ('0 18 * * *', 'bibliotheque.tasks.envoyer_rappels'),
 ] 
