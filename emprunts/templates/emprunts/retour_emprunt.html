@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Enregistrer retour
+{% endblock %}
+
+{% block content %}
+  <div class="border">
+    <h3>Informations de l'Emprunt</h3>
+    <p>Détails du livre et de l'emprunteur</p>
+    <div>
+      <p>Livre</p>
+      <p>{{ emprunt.ref_livre }}</p>
+    </div>
+    <div>
+      <p>Emprunteur</p>
+      <p>{{ emprunt.adherent }}</p>
+    </div>
+    <div>
+      <p>Date d'emprunt</p>
+      <p>{{ emprunt.date_emprunt }}</p>
+    </div>
+    <div>
+      <p>Date limite</p>
+      <p>{{ emprunt.date_limite }}</p>
+    </div>
+  </div>
+  <div class="border">
+    <form method="post">
+      {% csrf_token %}
+
+      <h3>Enregistrer le retour</h3>
+      <p>Confirmez la date de retour du livre</p>
+      {{ form }}
+      <a href="btn">Annuler</a>
+      <button type="submit">Confirmer le Retour</button>
+    </form>
+  </div>
+
+  <script>
+    const today = new Date().toISOString().split('T')[0]
+    document.getElementById('date_retour').value = today
+  </script>
+{% endblock %}

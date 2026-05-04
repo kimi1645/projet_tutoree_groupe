@@ -34,7 +34,11 @@
               <td>{{ emp.statut }}</td>
               <td>{{ emp.remarque }}</td>
               <td>
-                <a href="#">Retourner</a>
+                {% if emp.statut == 'Retourné' %}
+                  <p>Cette emprunt est dejà reglé</p>
+                {% else %}
+                  <a href="{% url 'retournerEmprunt' emp.id %}" class="btn btn-outline-success">Retourner</a>
+                {% endif %}
               </td>
             </tr>
           {% endfor %}

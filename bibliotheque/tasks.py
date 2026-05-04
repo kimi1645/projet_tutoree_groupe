@@ -5,14 +5,16 @@ from emprunts.models import Emprunt
 from django.conf import settings
 
 def envoyer_rappels():
-    ajourd_hui = timezone.now().date()
-    dans_3_jours = ajourd_hui + timedelta(days=3)
+    ajourd_hui = timezone.now().date()#Date aujourd'hui
+    dans_3_jours = ajourd_hui + timedelta(days=3)#3 jours avant la date_limite
 
+    #On recupère tous les emprunts non retourné où la date limite est dans 3 jours
     emprunts_bientot = Emprunt.objects.filter(
         statut='Non retourné',
         date_limite=dans_3_jours
     )
 
+    #on envoi un email à chaque emprunteur
     for emprunt in emprunts_bientot:
         send_mail(
             subject='Rappel- Retour de livre',
@@ -23,13 +25,15 @@ def envoyer_rappels():
 
 
     
-    #Notification retard
+    #Tous les emprunts en retard
     emprunts_retard = Emprunt.objects.filter(
         statut='Non retourné',
         date_limite__lt=ajourd_hui
     )
 
+    emprunts_retard.update(statut='En retard')#On met à jour le statut
 
+    #Envoie d'une email de notification
     for emprunt in emprunts_retard:
         send_mail(
             subject='Retard- Retour de livre',
