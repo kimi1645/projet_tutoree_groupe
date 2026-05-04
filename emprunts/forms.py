@@ -21,7 +21,9 @@ class EnregistrementRetourEmprunt(forms.ModelForm):
         widgets = {
             'date_retour' : forms.DateInput(attrs={
                 'class' : 'form-control datepicker',
-                'type' :'date'
+                'type' :'date',
+                'id' : 'date_retour',
+                'readonly' : True
             }),
             'remarque' : forms.Textarea(attrs={
                 'class' : 'form-control'
