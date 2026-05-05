@@ -2,7 +2,7 @@ from django.db.models import Sum
 from livres.models import Livre
 from adherents.models import Adherent
 from emprunts.models import Emprunt
-
+from .utils import get_user_role
 
 #on définit cette fonction context_processeurs parce que on a besoin de renvoyer ces données
 #à la template de base pour eviter de créer une fonction views pour chaque application
@@ -33,5 +33,9 @@ def dashboard_stats(request):
         'membres_actifs' : membres_actifs,
         'emprunts_en_cours' : emprunts_en_cours
     }
+
+
+def user_role(request):
+    return {'user_role' : get_user_role(request.user)}
 
     
