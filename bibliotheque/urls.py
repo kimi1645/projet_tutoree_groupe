@@ -21,7 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('authentification.urls')),
     path('dashboard/', include('tableau_de_bord.urls')),
-    #path('livre/', include('livre.urls')),
-    #path('adherent/', include('adherent.urls')),
+    path('livre/', include('livres.urls')),
+    #path('adherent/', include('adherents.urls')),
     path('emprunt/', include('emprunts.urls')),
 ]

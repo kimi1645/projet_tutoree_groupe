@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div>
+    <form action="" method="get" class="d-flex gap-4 m-4">
+      <input type="text" name="" id="" class="form-control" />
+      <button type="submit" class="btn btn-outline-success">Rechercher</button>
+    </form>
+  </div>
+  <div>
+    <a href="{% url 'ajouter_livre' %}">Ajouter un livre</a>
+  </div>
+  <div>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <td>Réference</td>
+          <td>Titre</td>
+          <td>Auteur</td>
+          <td>Catégorie</td>
+          <td>quantité</td>
+          <td>Actions</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% for livre in livres %}
+          <tr>
+            <td>{{ livre.reference }}</td>
+            <td>{{ livre.titre }}</td>
+            <td>{{ livre.auteur }}</td>
+            <td>{{ livre.categorie }}</td>
+            <td>{{ livre.quantite }}</td>
+            <td>
+              <a href="#" class="btn btn-success">Modifier</a>
+              <a href="#" class="btn btn-danger">Supprimer</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
