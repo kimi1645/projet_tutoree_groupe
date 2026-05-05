@@ -6,6 +6,6 @@ urlpatterns = [
     path('', views.liste_livre , name="liste_livre"),#le liste any @ views
     path('ajouter/', views.ajouter_livre , name="ajouter_livre"),
     path('recherche/', views.recherche, name='recherche'),
-    path("modifier/<int:id>/", views.modifier_livres, name="modifier_livres"),
-    path("supprimer/<int:id>/", views.supprimer_livres, name="supprimer_livres"),
+    path("modifier/<str:ref>/", views.modifier_livres, name="modifierLivre"),
+    path("supprimer/<str:ref>/", views.supprimer_livres, name="supprimerLivre"),
 ]
