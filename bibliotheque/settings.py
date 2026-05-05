@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_crontab',#Application utilisé pour les tâches programmés en avant (envoi email)
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -66,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'bibliotheque.context_processors.dashboard_stats',#Definir le context_processor pour envoyer les données de base
             ],
         },
     },
@@ -130,3 +133,22 @@ STATICFILES_DIRS = [
 LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = 'dashboard/'
 LOGOUT_REDIRECT_URL = '/'
+
+
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD  = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+
+
+#on execute chaque jour à 8h00
+CRONJOBS = [
+    #Minute Heure * * , tâche
+    ('0 8 * * *', 'bibliotheque.tasks.envoyer_rappels'),
+    ('0 12 * * *', 'bibliotheque.tasks.envoyer_rappels'),
+    ('0 18 * * *', 'bibliotheque.tasks.envoyer_rappels'),
+] 

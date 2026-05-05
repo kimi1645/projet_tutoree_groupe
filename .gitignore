@@ -3,3 +3,4 @@ plan_bibliotheque_django.html
 .xdp-.$mld.drawio.bkp-GHarrS
 *.drawio
 *.sqlite3
+.env

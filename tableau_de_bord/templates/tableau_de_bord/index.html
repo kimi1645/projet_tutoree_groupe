@@ -5,6 +5,151 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Tableau de bord</h1>
-  <p>Eto no misy anle statistique</p>
+  <h1>Statistiques</h1>
+  <p>Analysez les données de votre bibliothèque</p>
+  <div>
+    <span class="card">
+      <h2>Livres par catégorie</h2>
+      <p>Répartition de l'inventaire par catégorie</p>
+      <canvas id="livre_par_categorie"></canvas>
+    </span>
+    <span class="card">
+      <h2>Adhérents par fonction</h2>
+      <p>Distribution des membres par fonction</p>
+      <canvas id="adherent_par_fonction"></canvas>
+    </span>
+    <span class="card">
+      <h2>Evolution des emprunts</h2>
+      <p>Emprunts et retour sur 7 mois</p>
+      <canvas id="evolution_emprunt"></canvas>
+    </span>
+    <span class="card">
+      <h2>Emprunts par catégorie</h2>
+      <p>Total des emprunts par type de livre</p>
+      <canvas id="emprunt_par_categorie"></canvas>
+    </span>
+  </div>
+  <div class="d-flex flex-row justify-content-between">
+    <span>
+      <h3>Taux de retour</h3>
+      <p>
+        <strong>{{ taux_de_retour }} %</strong> du livres retouné à temps
+      </p>
+    </span>
+    <span>
+      <h3>Durrée Moyenne</h3>
+      <p>
+        <strong>{{ duree_moyenne }}</strong> jours Durrée moyenne d'emprunt
+      </p>
+    </span>
+    <span>
+      <h3>Catégorie populaire</h3>
+      <p>
+        <strong>{{ categorie_populaire }}</strong> La plus empruntée
+      </p>
+    </span>
+    <span>
+      <h3>Livres en Retard</h3>
+      <p>
+        <strong>{{ livres_en_retard }}</strong> Nécessitent un suivi
+      </p>
+    </span>
+  </div>
+  <script>
+
+    //Affichage d'un graphe en baton pour la quantité de livre par catégorie
+    new Chart(document.getElementById('livre_par_categorie'), {
+      type : 'bar',//Type du graphe
+      data: {
+        labels: {{ labels_livre_categorie |safe }},//Les labels sur l'axe de x
+        datasets: [{
+          label: 'Livre par categorie',
+          data: {{ data_livre_categorie | safe }} //Data sur l'axe y
+        }]
+      }
+    });
+
+    //Affichage d'un grph sous forme d'une cercle qui represente la distribution des membres par fonction
+    new Chart(document.getElementById('adherent_par_fonction'), {
+      type : 'doughnut',
+      data: {
+        labels: {{ labels_adherent_fonction |safe }},
+        datasets: [{
+          label: 'Distribution par fonction',
+          data: {{ data_adherent_fonction | safe }}
+        }]
+      }
+    });
+
+
+    // Statistique d'évolution d'emprunt
+      new Chart(document.getElementById('evolution_emprunt'), {
+      type : 'line',
+      options:{
+        responsive : true,
+        interaction: {
+          instersect: false,
+        }
+      },
+      data: {
+        labels: {{ labels_emprunt_mois |safe }},
+        datasets: [
+        {
+          label: 'Emprunts',
+          data: {{ emprunts_data | safe }},
+          fill : false,
+          tension: 0.4
+        },
+        {
+          label : 'Retours',
+          dara : {{retours_data | safe}},
+          fill : false,
+          tension: 0.4
+        }
+        ]
+      }
+    });
+
+
+    //Statistique des emprunts par catégorie
+ 
+    new Chart(document.getElementById('emprunt_par_categorie'), {
+        type: 'bar',                   
+        data: {
+            labels: {{ labels_emprunt_categorie|safe }},
+            datasets: [{
+                label: 'Nombre d\'emprunts',
+                data: {{ data_emprunt_categorie|safe }},
+
+                // Couleurs différentes par barre
+                backgroundColor: [
+                    '#6366f1',  // violet
+                    '#a855f7',  // purple
+                    '#ec4899',  // pink
+                    '#f97316',  // orange
+                    '#14b8a6',  // teal
+                    '#3b82f6',  // blue
+                ],
+            }]
+        },
+        options: {
+            indexAxis: 'y',             // ← Rend les barres HORIZONTALES
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: { color: '#f0f0f0' }
+                },
+                y: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+  </script>
 {% endblock %}

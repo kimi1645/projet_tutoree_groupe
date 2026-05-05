@@ -1,3 +1,10 @@
 asgiref==3.11.1
 Django==6.0.4
+django-crontab==0.7.1
+narwhals==2.20.0
+packaging==26.2
+plotly==6.7.0
+python-dateutil==2.9.0.post0
+python-decouple==3.8
+six==1.17.0
 sqlparse==0.5.5

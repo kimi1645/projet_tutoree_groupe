@@ -1,6 +1,128 @@
-from django.shortcuts import render
+import datetime
+import json
 
+from django.shortcuts import render
+from livres.models import Livre
+from adherents.models import Adherent
+from emprunts.models import Emprunt
+from django.db.models import F, Avg, DurationField, ExpressionWrapper, Sum, Count
+from django.db.models.functions import TruncMonth
+from django.utils import timezone
+from dateutil.relativedelta import relativedelta
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
 def index_dashboard(request):
-    return render(request, 'tableau_de_bord/index.html')
+    #Récuperation des quantité de livre par catégorie
+    #.values('categorie') == regroupé par catégorie
+    #.annotate(total_quantite=Sum('quantite')) == On additionne la valeur de l'attribut quantite de chaque categorie regroupé
+    #Puis on arrange par catégorie
+    quantite_par_categorie = Livre.objects.values('categorie').annotate(total_quantite=Sum('quantite')).order_by('categorie')
+    labels_livre_categorie = [q['categorie'] for q in quantite_par_categorie]
+    data_llivre_categorie = [q['total_quantite'] for q in quantite_par_categorie]
+    
+    
+    
+    #On regroupe les adhérents par fonction puis on crée une variable à la volé effectif total qui
+    #contient l'effectif des adhérents groupés par fonction
+    adherent_par_fonction = Adherent.objects.values('fonctions').annotate(effectif_total=Count('matricule'))
+    labels_adherent_fonction = [a['fonctions'] for a in adherent_par_fonction]
+    data_adherent_fonction = [a['effectif_total'] for a in adherent_par_fonction]
+
+
+
+    
+    #On recupère le nombre des emprunts du 7 mois passé
+    #Définir un variable pour stocker la date de debut date ajourd'hui - 7 mois
+    date_debut = timezone.now() - relativedelta(months=7)
+    #__gt = greate than
+    #__lte = less than or equal
+    #__lt = less than
+    #truncMonth = Tronque une date en ne gardant que l'année et les mois
+    emprunt_par_mois = (
+        Emprunt.objects.
+        filter(date_emprunt__gte=date_debut)#gte = greater than or equal 'lookup django'
+        .annotate(mois=TruncMonth('date_emprunt'))#On crée une variable temporaire mois , 
+        .values('mois')#Regroupé par mois
+        .annotate(total=Count('id'))#Crée une variable total pour stocker la total des emprunts en un mois 
+        .order_by('mois')
+    )
+
+
+    retours_par_mois = (
+        Emprunt.objects
+        .filter(date_retour__isnull=False)#Filtrer les enregistrement où date_retour n'est pas vide
+        .annotate(mois=TruncMonth('date_retour'))
+        .values('mois')
+        .annotate(total=Count('id'))
+        .order_by('mois')
+    )
+
+
+    #Formatage pour le graphe emprunts/retours par mois
+    #Formater les données pour faciliter leurs utilisation dans le graphe
+    labels_emprunt_mois = []#Variable pour stocker les labels ['janvier', 'fevrier', ....]
+    emprunts_data = []#Variable pour stocker les données pour emprunts
+    retours_dict = {r['mois'].strftime('%b'): r['total']for r in retours_par_mois}
+
+    for e in emprunt_par_mois:
+        mois_label = e['mois'].strftime('%b')
+        labels_emprunt_mois.append(mois_label)
+        emprunts_data.append(e['total'])
+
+    retours_data = [retours_dict.get(label, 0) for label in labels_emprunt_mois]
+    
+
+
+
+    #Emprunts par catégorie
+    emprunt_par_categorie = Emprunt.objects.values('ref_livre__categorie').annotate(total=Count('id')).order_by('ref_livre__categorie')
+    labels_emprunt_categorie = [e['ref_livre__categorie'] for e in emprunt_par_categorie]
+    data_emprunt_categorie = [e['total'] for e in emprunt_par_categorie]
+
+
+    #Livres en retard
+    livres_en_retard = Emprunt.objects.filter(date_limite__lt=timezone.now().date(), statut='Non retourné').count()
+    
+    #Categories populaire
+    categorie_populaire = Emprunt.objects.values('ref_livre__categorie').annotate(total=Count('id')).order_by('-total').first()['ref_livre__categorie']
+    
+
+    #Taux de retour
+    total_emprunts_retournee = Emprunt.objects.filter(statut='Retourné').count()
+    total_emprunts = Emprunt.objects.count()
+    taux_de_retour = 0;
+    if total_emprunts:
+        taux_de_retour = ((total_emprunts_retournee / total_emprunts) * 100).__round__(2)#Arrondir deux chiffres après la virgule
+
+
+    #Durrée moyenne d'un emprunt
+    duree = ExpressionWrapper(F('date_retour') - F('date_emprunt'), output_field=DurationField())
+    resultat = (
+        Emprunt.objects
+        .filter(date_retour__isnull=False)
+        .aggregate(moyenne=Avg(duree))
+    )
+    
+    duree_moyenne = resultat['moyenne'].days if resultat['moyenne'] else 0
+    
+    
+    return render(request, 'tableau_de_bord/index.html', {
+        'labels_livre_categorie' : json.dumps(labels_livre_categorie),
+        'data_livre_categorie' : json.dumps(data_llivre_categorie),
+        'labels_adherent_fonction' : json.dumps(labels_adherent_fonction),
+        'data_adherent_fonction' : json.dumps(data_adherent_fonction),
+        'labels_emprunt_mois' : json.dumps(labels_emprunt_mois),
+        'emprunts_data' : json.dumps(emprunts_data),
+        'retours_data' : json.dumps(retours_data),
+        'labels_emprunt_categorie' : json.dumps(labels_emprunt_categorie),
+        'data_emprunt_categorie' : json.dumps(data_emprunt_categorie),
+        'taux_de_retour' : taux_de_retour,
+        'duree_moyenne' : duree_moyenne,
+        'categorie_populaire' : categorie_populaire,
+        'livres_en_retard' : livres_en_retard
+
+    })
 
 
