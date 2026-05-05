@@ -20,38 +20,43 @@
         <p>Gestionnaire de bibliothèque</p>
         <a href="{% url 'seDeconnecter' %}" class="btn btn-danger">Se deconnecter</a>
       </header>
+      {% if user_role.role == 'bibliothecaire' %}
+        <section class="d-flex gap-2 justify-content-between m-2">
+          <div class="card flex-fill p-2">
+            <h3>Toal livre</h3>
+            <p>{{ total_livres }}</p>
+            <p>{{ titres_differents }} titres différents</p>
+          </div>
+          <div class="card flex-fill p-2">
+            <h3>Adhérents</h3>
+            <p>{{ total_adherents }}</p>
+            <p>{{ membres_actifs }} membres actifs</p>
+          </div>
+          <div class="card flex-fill p-2">
+            <h3>Emprunts en cours</h3>
+            <p>{{ emprunts_en_cours }} Non retounés</p>
+          </div>
+        </section>
 
-      <section class="d-flex gap-2 justify-content-between m-2">
-        <div class="card flex-fill p-2">
-          <h3>Toal livre</h3>
-          <p>{{ total_livres }}</p>
-          <p>{{ titres_differents }} titres différents</p>
-        </div>
-        <div class="card flex-fill p-2">
-          <h3>Adhérents</h3>
-          <p>{{ total_adherents }}</p>
-          <p>{{ membres_actifs }} membres actifs</p>
-        </div>
-        <div class="card flex-fill p-2">
-          <h3>Emprunts en cours</h3>
-          <p>{{ emprunts_en_cours }} Non retounés</p>
-        </div>
-      </section>
-
-      <nav class="navbar navbar-expand-lg bg-body-tertiary m-2">
-        <div class="container-fluid p-1">
-          <a href="#" class="navbar-brand">Bare de navigation</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-              <a href="{% url 'indexDashboard' %}" class="nav-link active" aria-current="page">Statistiques</a>
-              <a href="{% url 'listeAdherent' %}" class="nav-link">Adhérents</a>
-              <a href="{% url 'listeEmprunt' %}" class="nav-link">Emprunts</a>
-              <a href="{% url 'liste_livre' %}" class="nav-link">Livre</a>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary m-2">
+          <div class="container-fluid p-1">
+            <a href="#" class="navbar-brand">Bare de navigation</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <a href="{% url 'indexDashboard' %}" class="nav-link active" aria-current="page">Statistiques</a>
+                <a href="{% url 'listeAdherent' %}" class="nav-link">Adhérents</a>
+                <a href="{% url 'listeEmprunt' %}" class="nav-link">Emprunts</a>
+                <a href="{% url 'liste_livre' %}" class="nav-link">Livre</a>
+              </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      {% else %}
+        <h1>Statistiques adherents</h1>
+        <nav>Bar de navigation adherent</nav>
+      {% endif %}
+
       <main class="container-fluid">
         {% block content %}
           <!-- Mitsofoka eto le template miheriter anty template de base ty -->
