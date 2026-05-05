@@ -121,7 +121,7 @@ def index_dashboard(request):
         'taux_de_retour' : taux_de_retour,
         'duree_moyenne' : duree_moyenne,
         'categorie_populaire' : categorie_populaire,
-        'livres_en_retard' : livres_en_retard
+        'livres_en_retard' : livres_en_retard,
 
     })
 
