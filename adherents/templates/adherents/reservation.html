@@ -1,26 +1,111 @@
 <form method="post">
-  {% csrf_token %}
-  <div>{{ reservation_form }}</div>
-  {{ detail_reservation_form.management_form }}
-  <div>
-    {% for form in detail_reservation_form %}
-      {{ form.as_p }}
-    {% endfor %}
-  </div>
-  <div>
-    {% if detail_reservation_form.non_form_errors %}
-      {% for error in detail_reservation_form.non_form_errors %}
-        <p style="color: red;">{{ error }}</p>
-      {% endfor %}
-    {% endif %}
+    {% csrf_token %}
+    <div>{{ reservation_form }}</div>
+    {{ detail_reservation_form.management_form }}
 
-    {% for form in detail_reservation_form %}
-      {% if form.errors %}
-        {% for error in form.non_field_errors %}
-          <p style="color: red;">{{ error }}</p>
+    <!-- Erreurs formset -->
+    <div>
+        {% if detail_reservation_form.non_form_errors %}
+            {% for error in detail_reservation_form.non_form_errors %}
+                <p style="color:red;">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div id="formset-container">
+        {% for form in detail_reservation_form %}
+            <div class="form-inline">
+                {{ form.as_p }}
+                <!-- Bouton supprimer pour formulaires existants -->
+                <button type="button" class="delete-form"
+                        style="color:red;">Supprimer</button>
+            </div>
         {% endfor %}
-      {% endif %}
-    {% endfor %}
-  </div>
-  <button type="submit">Envoyer</button>
+    </div>
+
+    <!-- Formulaire vide caché -->
+    <div id="empty-form" style="display:none;">
+        {{ detail_reservation_form.empty_form.as_p }}
+    </div>
+
+    <button type="button" id="ajouter-champ">Ajouter un livre</button>
+    <button type="submit">Envoyer</button>
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  //Récuperation de la section avec id = formset-container
+    const formsetContainer = document.getElementById('formset-container')
+    //Récupération bouton ajouterChamp
+    const buttonAjouter    = document.getElementById('ajouter-champ')
+    //Récupération nombre total de formulaire enfant(détail)
+    const totalForms       = document.getElementById(
+        'id_{{ detail_reservation_form.prefix }}-TOTAL_FORMS'
+    )
+
+
+    //Récuperation de la formulaire vide caché
+    const emptyFormDiv = document.getElementById('empty-form')
+
+    // Ajouter un nouveau formulaire
+    function ajouterChamp() {
+        const formCount      = parseInt(totalForms.value)
+        const nouveauFormHTML = emptyFormDiv.innerHTML
+            .replace(/__prefix__/g, formCount)//On met à jour le prefixe
+
+        //Crétion nouveau element hml div
+        const nouveauDiv = document.createElement('div')
+        nouveauDiv.classList.add('form-inline')
+        nouveauDiv.innerHTML = nouveauFormHTML
+
+        //Ajouter le bouton supprimer
+        const btnSupprimer = document.createElement('button')
+        //Ajout style
+        btnSupprimer.type      = 'button'
+        btnSupprimer.className = 'delete-form'
+        btnSupprimer.style.color = 'red'
+        btnSupprimer.textContent = 'Supprimer'
+        nouveauDiv.appendChild(btnSupprimer)//Ajout bouton supprimer au DOm
+
+        formsetContainer.appendChild(nouveauDiv)
+        totalForms.value = formCount + 1//On met à jour le nombre total de formulaire
+    }
+
+    //On ajout un écouteur d'évenement au bouton ajouter
+    buttonAjouter.addEventListener('click', ajouterChamp)
+
+    // ✅ Supprimer un formulaire
+    formsetContainer.addEventListener('click', (e) => {
+        if (e.target && e.target.classList.contains('delete-form')) {
+            const formDiv = e.target.closest('.form-inline')
+
+            // Vérifier s'il reste au moins 1 formulaire
+            const forms = formsetContainer.querySelectorAll('.form-inline')
+            if (forms.length <= 1) {
+                alert('Vous devez avoir au moins un livre !')
+                return
+            }
+
+            formDiv.remove()
+
+            // ✅ Renuméroter après suppression
+            const formsRestants = formsetContainer.querySelectorAll('.form-inline')
+            totalForms.value = formsRestants.length
+
+            formsRestants.forEach((form, index) => {
+                form.querySelectorAll('input, select, textarea, label').forEach((el) => {
+                    if (el.name) {
+                        el.name = el.name.replace(/-\d+-/, `-${index}-`)
+                    }
+                    if (el.id) {
+                        el.id = el.id.replace(/-\d+-/, `-${index}-`)  // ✅ \d+ corrigé
+                    }
+                    if (el.htmlFor) {
+                        el.htmlFor = el.htmlFor.replace(/-\d+-/, `-${index}-`)  // ✅ htmlFor corrigé
+                    }
+                })
+            })
+        }
+    })
+})
+</script>
