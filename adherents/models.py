@@ -39,7 +39,7 @@ class Reservation(models.Model):
     ], default='En attente')
     valider_par = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
