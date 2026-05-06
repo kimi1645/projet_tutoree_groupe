@@ -70,6 +70,8 @@ class FormulaireInscription(forms.Form):
         
         return cleaned_data
     
+
+#Formulaire pour la verification par email
 class VerificationParEmail(forms.Form):
     email = forms.EmailField(label="Entrez votre adresse email",
                              widget=forms.EmailInput(attrs={
@@ -83,33 +85,52 @@ class VerificationParEmail(forms.Form):
 
         return cleaned_data
 
-
-class FormulalireReservation(forms.ModelForm):
+#Formulaire pour la réservation
+class FormulaireReservation(forms.ModelForm):
     class Meta:
         model = Reservation
-        fields = '__all__'
+        exclude = ['adherent', 'statut',
+                   'valider_par',
+                   'date_validation']#On exclue tous les champs parce qu'ils vont être remplie automatiquement au niveau de views 
         
 
+
+#Formulaire pour le détail de réservation
 class DetailReservationFormSet(BaseInlineFormSet):
+    min_num = 1
     def clean(self):
         super().clean()
         if any(self.errors):
             return
-        livre_deja_ajoutee = set()
+        
+        #On verifie si il n'y a aucun doublons
+        livre_deja_ajoutee = set()#variable pour stocker les livres reservés sans doublons
+        valid_forms_count = 0 #Variable pour compter le nombre de détail
+
         for form in self.forms:
             if form.cleaned_data and not form.cleaned_data.get("DELETE", False):
                 livre_reserver = form.cleaned_data.get('livre')
+
+                if not livre_reserver:
+                    continue
+                
                 if livre_reserver in livre_deja_ajoutee:
                     raise ValidationError(
                         "Vous avez ajouté le même livre plusieurs fois"
                     )
+                
                 livre_deja_ajoutee.add(livre_reserver)
+                valid_forms_count += 1
+        if valid_forms_count < 1:
+            raise ValidationError("Vous devez reserver au moins un livre")
     
+#Utilisation de inlineformset_factory de Django pour faciliter l'enregistrement de plusieurs formulaire
+#enfant (DetailReservation) avec un même parent(Reservation)
 DetailReservationInlineFormSet = inlineformset_factory(
-    Reservation,
-    DetailReservation,
-    fields = '__all__',
-    extra=1,
-    can_delete=False,
-    formset=DetailReservationFormSet
+    Reservation,#Modele parent
+    DetailReservation,#Modèle enfant
+    fields = ['livre', 'quantite'],#Les champs à remplir
+    extra=2,#Le nombre des formulaires enfant
+    can_delete=True,#On peut  supprime le formulaire enfant
+    formset=DetailReservationFormSet#On précise le formset utilisé
 )
