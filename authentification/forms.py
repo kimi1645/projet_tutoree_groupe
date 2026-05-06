@@ -6,9 +6,10 @@ from django import forms
 class FormulaireAuthentification(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={
         'placeholder' : 'ex: john_doe',
-        'pattern' : "[0-9a-fA-F]{4,8}",
+       
         'class' : 'form-control'
     }),label="Nom d'utilisateur")
     password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'class' : 'form-control'
+        'class' : 'form-control',
+        #'pattern' : "[0-9a-fA-F]{4,8}",
     }), label="Mots de passe")

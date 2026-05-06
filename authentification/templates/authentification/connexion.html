@@ -41,7 +41,7 @@
             <div>{{ form.username.label_tag }}
               {{ form.username }}</div>
             <div>{{ form.password.label_tag }} {{ form.password }}</div>
-            <a href="#">Mots de passe oublié</a>
+            <a href="{% url 'password_reset' %}">Mot de passe oublié ?</a>
 
             <button type="submit">Se connecter</button>
             <p>
