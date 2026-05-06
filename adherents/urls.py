@@ -8,5 +8,6 @@ urlpatterns = [
     path("modifier/<str:id>/", adherent_views.modifier_adherent, name="modifierAdherent"),
     path("verification/", adherent_views.verification, name="verification"),
     path("inscription/", adherent_views.inscription, name="inscription"),
-    path("reservation", adherent_views.reservation_avec_detail, name="reservation")
+    path("reservation", adherent_views.reservation_avec_detail, name="reservation"),
+    path("liste_reservation/", adherent_views.liste_reservation, name="listeReservation")
 ]

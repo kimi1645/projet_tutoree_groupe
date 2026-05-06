@@ -1,11 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import Adherent, CompteAdherent
+from .models import Adherent, CompteAdherent, Reservation
 from .forms import FormulaireAjoutAdherent, FormulaireInscription, VerificationParEmail, FormulaireReservation, DetailReservationFormSet, DetailReservationInlineFormSet
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 import random
 from django.conf import settings
+from django.core.paginator import Paginator
 
 def liste_adherents(request):
     adherents = Adherent.objects.all()
@@ -138,4 +139,17 @@ def reservation_avec_detail(request):
         'reservation_form' : reservation_form,
         'detail_reservation_form' : detail_reservation_form
     }
-    return render(request, 'adherents/reservation.html', context)    
+    return render(request, 'adherents/reservation.html', context)
+
+
+def liste_reservation(request):
+    reservation_avec_details = Reservation.objects.prefetch_related('ligneReservation').filter(adherent=request.user.compteadherent.personne).order_by('-date_reservation')
+
+    paginator = Paginator(reservation_avec_details, 5)
+
+    page_num = request.GET.get('page')
+    page_obj = paginator.get_page(page_num)
+
+    context = {"page_obj" : page_obj}
+
+    return render(request, "adherents/liste_reservation.html", context)

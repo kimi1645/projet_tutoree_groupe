@@ -31,7 +31,7 @@ class CompteAdherent(models.Model):
 
 class Reservation(models.Model):
     adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE)
-    date_commande = models.DateField(auto_now_add=True)
+    date_reservation = models.DateField(auto_now_add=True)
     statut = models.CharField(choices=[
         ('En attente', 'En attente'),
         ('Validée', 'Validée'),
@@ -47,6 +47,6 @@ class Reservation(models.Model):
 
 
 class DetailReservation(models.Model):
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, related_name='ligneReservation')
     livre = models.ForeignKey(Livre, on_delete=models.CASCADE)
     quantite = models.PositiveIntegerField(default=1)

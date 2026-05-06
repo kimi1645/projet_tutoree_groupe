@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Liste réservation
+{% endblock %}
+
+{% block content %}
+  <table class="table">
+    <thead>
+      <tr>
+        <td>Numéro</td>
+        <td>Date de réservation</td>
+        <td>Statut</td>
+        <td>Détails</td>
+      </tr>
+    </thead>
+    <tbody>
+      {% for reservation in page_obj.object_list %}
+        <tr>
+          <td>{{ reservation.id }}</td>
+          <td>{{ reservation.date_reservation }}</td>
+          <td>{{ reservation.statut }}</td>
+          <td>
+            {% for detail in reservation.ligneReservation.all %}
+              <ul>
+                <li>Livre : {{ detail.livre }} , Quantite : {{ detail.quantite }}</li>
+              </ul>
+            {% endfor %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <nav aria-label="Pagination des achats">
+    <ul class="pagination justify-content-center">
+      {# Lien « Page précédente » #}
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Précédent">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Précédent</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" aria-hidden="true">&laquo;</span>
+        </li>
+      {% endif %}
+
+      {# Numéros de pages (on peut limiter l’affichage si besoin) #}
+      {% for num in page_obj.paginator.page_range %}
+        {# Marquer la page courante #}
+        {% if num == page_obj.number %}
+          <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+          </li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {# Lien « Page suivante » #}
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Suivant">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Suivant</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" aria-hidden="true">&raquo;</span>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endblock %}
