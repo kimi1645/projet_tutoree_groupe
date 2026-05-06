@@ -1,0 +1,26 @@
+<form method="post">
+  {% csrf_token %}
+  <div>{{ reservation_form }}</div>
+  {{ detail_reservation_form.management_form }}
+  <div>
+    {% for form in detail_reservation_form %}
+      {{ form.as_p }}
+    {% endfor %}
+  </div>
+  <div>
+    {% if detail_reservation_form.non_form_errors %}
+      {% for error in detail_reservation_form.non_form_errors %}
+        <p style="color: red;">{{ error }}</p>
+      {% endfor %}
+    {% endif %}
+
+    {% for form in detail_reservation_form %}
+      {% if form.errors %}
+        {% for error in form.non_field_errors %}
+          <p style="color: red;">{{ error }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  </div>
+  <button type="submit">Envoyer</button>
+</form>
