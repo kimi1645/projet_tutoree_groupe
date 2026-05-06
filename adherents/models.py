@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from livres.models import Livre
 
 FONCTIONS = [
     ('Etudiant','Etudiant'),
@@ -28,4 +28,25 @@ class CompteAdherent(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     personne = models.OneToOneField(Adherent, on_delete=models.CASCADE)
 
-    
+
+class Reservation(models.Model):
+    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE)
+    date_commande = models.DateField(auto_now_add=True)
+    statut = models.CharField(choices=[
+        ('En attente', 'En attente'),
+        ('Validée', 'Validée'),
+        ('Refusée', 'Refusée'),
+    ], default='En attente')
+    valider_par = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    date_validation = models.DateField(null=True, blank=True)
+
+
+class DetailReservation(models.Model):
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+    livre = models.ForeignKey(Livre, on_delete=models.CASCADE)
+    quantite = models.PositiveIntegerField(default=1)
