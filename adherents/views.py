@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Adherent, CompteAdherent
-from .forms import FormulaireAjoutAdherent, FormulaireInscription, VerificationParEmail
+from .forms import FormulaireAjoutAdherent, FormulaireInscription, VerificationParEmail, FormulaireReservation, DetailReservationFormSet, DetailReservationInlineFormSet
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 import random
@@ -108,3 +108,34 @@ def inscription(request):
         form = FormulaireInscription()
 
     return render(request, 'adherents/inscription.html', {'form': form})
+
+
+
+#Views qui gère la réservation
+def reservation_avec_detail(request):
+    if request.method == "POST":
+        reservation_form = FormulaireReservation(request.POST)
+       
+        #Vérifiation si la formulaire est ok
+        if reservation_form.is_valid():
+            reservation = reservation_form.save(commit=False)
+            #Recuperer l'adhérent connecté
+            adherent = request.user.compteadherent.personne
+            reservation.adherent = adherent
+            detail_reservation_form = DetailReservationInlineFormSet(request.POST, instance=reservation)
+            if detail_reservation_form.is_valid():
+                #Enregistrement après validation
+                reservation.save()
+                detail_reservation_form.save()
+
+                return HttpResponse("Reservation effectué avec succès")
+            
+    else:
+        reservation_form = FormulaireReservation()
+        detail_reservation_form = DetailReservationInlineFormSet()
+        
+    context = {
+        'reservation_form' : reservation_form,
+        'detail_reservation_form' : detail_reservation_form
+    }
+    return render(request, 'adherents/reservation.html', context)    
