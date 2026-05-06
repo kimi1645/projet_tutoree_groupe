@@ -6,7 +6,7 @@ from django.db.models import Q
 from adherents.models import Adherent
 from livres.models import Livre
 from .models import Emprunt
-from .forms import EmpruntForm, EnregistrementRetourEmprunt
+from .forms import EnregistrementRetourEmprunt
 
 @login_required
 def liste_emprunt(request):
@@ -15,6 +15,7 @@ def liste_emprunt(request):
 
 
 #Fonction pour enregistrer un emprunt
+"""
 @login_required
 def enregistrer_emprunt(request):
     #Lors de la soumission du formulaire
@@ -47,6 +48,8 @@ def enregistrer_emprunt(request):
         return render(request, "emprunts/ajouter_emprunt.html", {
             'form' : form
         })
+
+"""
 
 
 @login_required

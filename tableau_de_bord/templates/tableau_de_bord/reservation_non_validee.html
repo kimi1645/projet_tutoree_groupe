@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Validation
+{% endblock %}
+
+{% block content %}
+  <table class="table">
+    <thead>
+      <tr>
+        <td>Numéro</td>
+        <td>Date de réservation</td>
+        <td>Statut</td>
+        <td>Détails</td>
+        {% if user_role.role == 'bibliothecaire' %}
+          <td>Actions</td>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for reservation in reservation_avec_details %}
+        <tr>
+          <td>{{ reservation.id }}</td>
+          <td>{{ reservation.date_reservation }}</td>
+          <td>{{ reservation.statut }}</td>
+
+          <td>
+            {% for detail in reservation.ligneReservation.all %}
+              <ul>
+                <li>Livre : {{ detail.livre }} , Quantite : {{ detail.quantite }}</li>
+              </ul>
+            {% endfor %}
+          </td>
+          {% if user_role.role == 'bibliothecaire' %}
+            <td>
+              <a href="{% url 'validerReservation' reservation.id %}" btn btn-info>Valider</a>
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

@@ -1,9 +1,10 @@
 import datetime
 import json
 
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from livres.models import Livre
-from adherents.models import Adherent
+from adherents.models import Adherent, Reservation
 from emprunts.models import Emprunt
 from django.db.models import F, Avg, DurationField, ExpressionWrapper, Sum, Count
 from django.db.models.functions import TruncMonth
@@ -12,6 +13,7 @@ from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
 
 
+"""
 @login_required
 def index_dashboard(request):
     #Récuperation des quantité de livre par catégorie
@@ -125,4 +127,33 @@ def index_dashboard(request):
 
     })
 
+"""
 
+
+def index_dashboard(request):
+    return HttpResponse("Maintenance dashboard")
+
+def liste_reservation_avalidee(request):
+    if request.method == "POST":
+        return HttpResponse("Requette POST")
+    else:
+        reservation_avec_details = Reservation.objects.prefetch_related('ligneReservation').filter(statut='En attente').order_by('-date_reservation')
+        return render(request, 'tableau_de_bord/reservation_non_validee.html', {
+            'reservation_avec_details' : reservation_avec_details
+        })
+    
+def valider_reservation(request, id):
+    reservation = Reservation.objects.get(id=id)
+
+    reservation.statut = 'Validée'
+    reservation.valider_par = request.user
+    reservation.date_validation = timezone.now().date()
+    reservation.save()
+
+
+    for detail in  reservation.ligneReservation.all():
+        Emprunt.objects.create(
+            reservation = reservation,
+            bibliothecaire = request.user
+        )
+    return redirect('listeReservationAValidee')
