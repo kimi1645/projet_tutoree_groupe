@@ -110,6 +110,7 @@ class DetailReservationFormSet(BaseInlineFormSet):
         for form in self.forms:
             if form.cleaned_data and not form.cleaned_data.get("DELETE", False):
                 livre_reserver = form.cleaned_data.get('livre')
+                quantite = form.cleaned_data.get('quantite')
 
                 if not livre_reserver:
                     continue
@@ -120,6 +121,14 @@ class DetailReservationFormSet(BaseInlineFormSet):
                     )
                 
                 livre_deja_ajoutee.add(livre_reserver)
+                if livre_reserver and quantite:
+                    if quantite > livre_reserver.quantite:
+                        raise forms.ValidationError(
+                            f"Stock insuffisant pour le livre '{livre_reserver.titre}'"
+                            f"- Stock disponible : {livre_reserver.quantite}"
+                        )
+
+
                 valid_forms_count += 1
         if valid_forms_count < 1:
             raise ValidationError("Vous devez reserver au moins un livre")
