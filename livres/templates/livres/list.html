@@ -28,7 +28,9 @@
             <td>Auteur</td>
             <td>Catégorie</td>
             <td>quantité</td>
-            <td>Actions</td>
+            {% if user_role.role == 'bibliothecaire' %}
+              <td>Actions</td>
+            {% endif %}
           </tr>
         </thead>
         <tbody>
@@ -39,10 +41,12 @@
               <td>{{ livre.auteur }}</td>
               <td>{{ livre.categorie }}</td>
               <td>{{ livre.quantite }}</td>
-              <td>
-                <a href="{% url 'modifierLivre' livre.reference %}" class="btn btn-success">Modifier</a>
-                <a href="{% url 'supprimerLivre' livre.reference %}" class="btn btn-danger">Supprimer</a>
-              </td>
+              {% if user_role.role == 'bibliothecaire' %}
+                <td>
+                  <a href="{% url 'modifierLivre' livre.reference %}" class="btn btn-success">Modifier</a>
+                  <a href="{% url 'supprimerLivre' livre.reference %}" class="btn btn-danger">Supprimer</a>
+                </td>
+              {% endif %}
             </tr>
           {% endfor %}
         </tbody>

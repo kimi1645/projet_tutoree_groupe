@@ -1,7 +1,8 @@
 from django.db.models import Sum
 from livres.models import Livre
-from adherents.models import Adherent
+from adherents.models import Adherent, Reservation
 from emprunts.models import Emprunt
+from .utils import get_user_role
 
 
 #on définit cette fonction context_processeurs parce que on a besoin de renvoyer ces données
@@ -18,20 +19,43 @@ def dashboard_stats(request):
     #Totals adhérents
     total_adherents = Adherent.objects.count()
     #Membres actifs
-    #emprunt__statut = requette join Adherent --> Emprunt --> statut
+    #emprunt__statut = requette join Adherent --> Reservation --> Emprunt --> statut
     # .distinct() evite le doublons
-    membres_actifs = Adherent.objects.filter(emprunt__statut='Non retourné').distinct().count()
-    print(membres_actifs)
+    #Adherent qui à un emprunt en cours
+    membres_actifs = Adherent.objects.filter(reservation__emprunt__statut='Non retourné').distinct().count()
+    
 
     #Emprunts en cours
     #Filtration des emprunts avec attribus statut = 'Non retourné
     emprunts_en_cours = Emprunt.objects.filter(statut='Non retourné').count()
+
+
+    role_utilisateur = get_user_role(request.user)
+    if request.user.is_authenticated:
+        total_reservation_effectue = 0
+        reservation_validee = 0
+        reservation_refusee = 0
+        if role_utilisateur['role'] == 'adherent':
+            total_reservation_effectue = Reservation.objects.filter(adherent=request.user.compteadherent.personne).count()
+            reservation_validee = Reservation.objects.filter(adherent= request.user.compteadherent.personne, statut='Validée').count()
+            reservation_refusee = Reservation.objects.filter(adherent= request.user.compteadherent.personne, statut='Refusée').count()
+    
+        return {
+            'total_livres' : total_livres,
+            'titres_differents' : titres_differents,
+            'total_adherents' : total_adherents,
+            'membres_actifs' : membres_actifs,
+            'emprunts_en_cours' : emprunts_en_cours,
+            'total_reservation_effectuee' :total_reservation_effectue,
+            'reservation_validee' : reservation_validee,
+            'reservation_refusee' : reservation_refusee
+        }
     return {
-        'total_livres' : total_livres,
-        'titres_differents' : titres_differents,
-        'total_adherents' : total_adherents,
-        'membres_actifs' : membres_actifs,
-        'emprunts_en_cours' : emprunts_en_cours
+        'default' : None
     }
+
+
+def user_role(request):
+    return {'user_role' : get_user_role(request.user)}
 
     

@@ -22,6 +22,6 @@ urlpatterns = [
     path('', include('authentification.urls')),
     path('dashboard/', include('tableau_de_bord.urls')),
     path('livre/', include('livres.urls')),
-    #path('adherent/', include('adherents.urls')),
+    path('adherent/', include('adherents.urls')),
     path('emprunt/', include('emprunts.urls')),
 ]
