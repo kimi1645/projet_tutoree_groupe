@@ -29,19 +29,28 @@ def dashboard_stats(request):
     emprunts_en_cours = Emprunt.objects.filter(statut='Non retourné').count()
 
 
-    total_reservation_effectue = Reservation.objects.filter(adherent=request.user.compteadherent.personne).count()
-    reservation_validee = Reservation.objects.filter(adherent= request.user.compteadherent.personne, statut='Validée').count()
-    reservation_refusee = Reservation.objects.filter(adherent= request.user.compteadherent.personne, statut='Refusée').count()
+    role_utilisateur = get_user_role(request.user)
+    if request.user.is_authenticated:
+        total_reservation_effectue = 0
+        reservation_validee = 0
+        reservation_refusee = 0
+        if role_utilisateur['role'] == 'adherent':
+            total_reservation_effectue = Reservation.objects.filter(adherent=request.user.compteadherent.personne).count()
+            reservation_validee = Reservation.objects.filter(adherent= request.user.compteadherent.personne, statut='Validée').count()
+            reservation_refusee = Reservation.objects.filter(adherent= request.user.compteadherent.personne, statut='Refusée').count()
     
+        return {
+            'total_livres' : total_livres,
+            'titres_differents' : titres_differents,
+            'total_adherents' : total_adherents,
+            'membres_actifs' : membres_actifs,
+            'emprunts_en_cours' : emprunts_en_cours,
+            'total_reservation_effectuee' :total_reservation_effectue,
+            'reservation_validee' : reservation_validee,
+            'reservation_refusee' : reservation_refusee
+        }
     return {
-        'total_livres' : total_livres,
-        'titres_differents' : titres_differents,
-        'total_adherents' : total_adherents,
-        'membres_actifs' : membres_actifs,
-        'emprunts_en_cours' : emprunts_en_cours,
-        'total_reservation_effectuee' :total_reservation_effectue,
-        'reservation_validee' : reservation_validee,
-        'reservation_refusee' : reservation_refusee
+        'default' : None
     }
 
 
