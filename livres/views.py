@@ -22,7 +22,7 @@ def recherche(request) :
         return redirect('liste_livre')
     else:
         nbre_resultat = 0
-        livre_lookup = Q(reference__icontains=query) | Q(titre__icontains=query) | Q(auteur__icontains=query) 
+        livre_lookup = Q(categorie__icontains=query) | Q(titre__icontains=query) | Q(auteur__icontains=query) 
         livres =  Livre.objects.filter(livre_lookup)
         context = {
             'livres' : livres,

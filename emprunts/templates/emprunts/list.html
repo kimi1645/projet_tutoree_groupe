@@ -1,72 +1,77 @@
 {% extends 'base.html' %}
+
 {% block title %}
   Liste des emprunts
 {% endblock %}
+
 {% block content %}
-  <div>
-    <form method="GET" action="{% url 'search' %}" class="d-flex gap-4">
-      <input type="text" name="q" value="{{ query }}" placeholder="Reference ou titre du livre ou nom emprunteur..." autocomplet="off" class="form-control" />
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+    <form method="GET" action="{% url 'search' %}" class="d-flex gap-2 w-100 w-md-auto">
+      <input type="text" name="q" value="{{ query }}" placeholder="Recherche emprunt..." autocomplete="off" class="form-control" />
       <button type="submit" class="btn btn-secondary">Rechercher</button>
     </form>
   </div>
-  <div class="">
-    {% if query and nb_resultat == 0 %}
-      <div class="m-3">
-        <p class="text-center alert alert-info">Aucun résultat pour {{ query }}</p>
+
+  {% if query and nb_resultat == 0 %}
+    <div class="alert alert-info">
+      Aucun résultat pour <strong>{{ query }}</strong>
+    </div>
+  {% endif %}
+
+  {% if emprunts %}
+    <div class="card card-soft shadow-sm border-0">
+      <div class="card-body p-3">
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Réservation</th>
+                <th>Responsable</th>
+                <th>Date d'emprunt</th>
+                <th>Date limite</th>
+                <th>Date de retour</th>
+                <th>Statut</th>
+                <th>Remarque</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for emp in emprunts %}
+                <tr>
+                  <td>{{ emp.reservation }}</td>
+                  <td>{{ emp.bibliothecaire }}</td>
+                  <td>{{ emp.date_emprunt }}</td>
+                  <td>{{ emp.date_limite }}</td>
+                  <td>
+                    {% if emp.date_retour %}
+                      {{ emp.date_retour }}
+                    {% else %}
+                      Non retourné
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if emp.statut == 'En retard' %}
+                      <span class="badge bg-danger badge-status">{{ emp.statut }}</span>
+                    {% else %}
+                      <span class="badge bg-secondary badge-status">{{ emp.statut }}</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ emp.remarque }}</td>
+                  <td>
+                    {% if emp.statut == 'Retourné' %}
+                      <span class="text-muted-soft">Déjà réglé</span>
+                    {% else %}
+                      <a href="{% url 'retournerEmprunt' emp.id %}" class="btn btn-sm btn-outline-success">Retourner</a>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
-    {% endif %}
-    {% if emprunts %}
-      <table class="table">
-        <thead>
-          <tr>
-            <td>Lié a réservation numero</td>
-            <td>Responsable</td>
-            <td>Date d'emprunt</td>
-            <td>Date de limite</td>
-            <td>Date de retour</td>
-            <td>Statut</td>
-            <td>Remarque</td>
-            <td>Actions</td>
-          </tr>
-        </thead>
-        <tbody>
-          {% for emp in emprunts %}
-            <tr class="space-y-2">
-              <td>{{ emp.reservation }}</td>
-              <td>{{ emp.bibliothecaire }}</td>
-              <td>{{ emp.date_emprunt }}</td>
-              <td>{{ emp.date_limite }}</td>
-              <td>
-                {% if emp.date_retour %}
-                  {{ emp.date_retour }}
-                {% else %}
-                  Non retourné
-                {% endif %}
-              </td>
-              <td>
-                {% if emp.statut == 'En retard' %}
-                  <p class="bg-danger-subtle rounded-4 text-center">{{ emp.statut }}</p>
-                {% else %}
-                  <p class="bg-secondary-subtle rounded-4 text-center">{{ emp.statut }}</p>
-                {% endif %}
-              </td>
-              <td>{{ emp.remarque }}</td>
-              <td>
-                {% if emp.statut == 'Retourné' %}
-                  <p>Cette emprunt est dejà reglé</p>
-                {% else %}
-                  <a href="{% url 'retournerEmprunt' emp.id %}" class="btn btn-outline-success">Retourner</a>
-                {% endif %}
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% endif %}
-    {% if not emprunt and nb_emprunt == 0 %}
-      <div>
-        <p colspan="9" class="text-center">Vous n'avez pas encore enregistrer des emprunts</p>
-      </div>
-    {% endif %}
-  </div>
+    </div>
+  {% else %}
+    <div class="alert alert-secondary">Vous n'avez pas encore enregistré d'emprunts.</div>
+  {% endif %}
 {% endblock %}

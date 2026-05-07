@@ -1,104 +1,125 @@
-<!-- templates/base.html -->
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
-    <meta charset="UTF-8" />
     {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
       Bibliothèque |{% block title %}
 
       {% endblock %}
     </title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
-    <div class="container-fluid bg-gray">
-      <header class="d-flex align-items-center justify-content-between m-2">
-        <img src="{% static 'logo/logo.png' %}" alt="" height="5%" width="5%" />
-        <p>Gestionnaire de bibliothèque</p>
-        <a href="{% url 'seDeconnecter' %}" class="btn btn-danger">Se deconnecter</a>
+    <div class="min-vh-100 d-flex flex-column">
+      <header class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container-fluid">
+          <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'indexDashboard' %}">
+            <img src="{% static 'logo/logo.png' %}" alt="Logo" width="34" height="34" />
+            LibManager
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+          <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              {% if user.is_authenticated %}
+                {% if user_role and user_role.role == 'bibliothecaire' %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'indexDashboard' %}">Dashboard</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'listeAdherent' %}">Adhérents</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'listeEmprunt' %}">Emprunts</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'liste_livre' %}">Livres</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'listeReservationAValidee' %}">Réservations</a>
+                  </li>
+                {% else %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'indexDashboard' %}">Dashboard</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'listeReservation' %}">Réservations</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'liste_livre' %}">Livres</a>
+                  </li>
+                {% endif %}
+              {% endif %}
+            </ul>
+            <div class="d-flex align-items-center gap-2">
+              {% if user.is_authenticated %}
+                <span class="navbar-text text-white-75">Bonjour {{ request.user.username }}</span>
+                <a href="{% url 'seDeconnecter' %}" class="btn btn-outline-light btn-sm">Déconnexion</a>
+              {% else %}
+                <a href="{% url 'seConnecter' %}" class="btn btn-outline-light btn-sm">Connexion</a>
+              {% endif %}
+              <button id="themeToggle" type="button" class="btn btn-sm btn-outline-light btn-theme-toggle" aria-label="Basculer thème">Sombre</button>
+            </div>
+          </div>
+        </div>
       </header>
-      <!-- Bare de navigation et statistique pour le bibliothecaire -->
-      {% if user_role.role == 'bibliothecaire' %}
-        <section class="d-flex gap-2 justify-content-between m-2">
-          <div class="card flex-fill p-2">
-            <h3>Toal livre</h3>
-            <p>{{ total_livres }}</p>
-            <p>{{ titres_differents }} titres différents</p>
-          </div>
-          <div class="card flex-fill p-2">
-            <h3>Adhérents</h3>
-            <p>{{ total_adherents }}</p>
-            <p>{{ membres_actifs }} membres actifs</p>
-          </div>
-          <div class="card flex-fill p-2">
-            <h3>Emprunts en cours</h3>
-            <p>{{ emprunts_en_cours }} Non retounés</p>
-          </div>
-        </section>
 
-        <nav class="navbar navbar-expand-lg bg-body-tertiary m-2">
-          <div class="container-fluid p-1">
-            <a href="#" class="navbar-brand">Bare de navigation</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-              <div class="navbar-nav">
-                <a href="{% url 'indexDashboard' %}" class="nav-link active" aria-current="page">Statistiques</a>
-                <a href="{% url 'listeAdherent' %}" class="nav-link">Adhérents</a>
-                <a href="{% url 'listeEmprunt' %}" class="nav-link">Emprunts</a>
-                <a href="{% url 'liste_livre' %}" class="nav-link">Livre</a>
-                <a href="{% url 'listeReservationAValidee' %}" class="nav-link">Réservation</a>
+      <main class="container py-4 flex-grow-1">
+        {% if messages %}
+          <div class="mb-4">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show form-alert" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
-            </div>
+            {% endfor %}
           </div>
-        </nav>
-        <!-- Fin bare de navigation et statistique pour le bibliothecaire -->
-      {% else %}
-        <section class="d-flex gap-2 justify-content-between m-2">
-          <div class="card flex-fill p-2">
-            <h3>Toal livre</h3>
-            <p>{{ total_livres }}</p>
-            <p>{{ titres_differents }} titres différents</p>
-          </div>
-          <div class="card flex-fill p-2">
-            <h3>Total réservation effectués</h3>
-            <p>{{ total_reservation_effectuee }}</p>
-            <p>{{ reservation_validee }} validées</p>
-            <p>{{ reservation_refusee }} refusées</p>
-          </div>
-        </section>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary m-2">
-          <div class="container-fluid p-1">
-            <a href="#" class="navbar-brand">Bare de navigation</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-              <div class="navbar-nav">
-                <a href="{% url 'indexDashboard' %}" class="nav-link active" aria-current="page">Statistiques</a>
-                <a href="{% url 'listeReservation' %}" class="nav-link">Réservation</a>
-                <a href="{% url 'liste_livre' %}" class="nav-link">Livre</a>
-                <a href="#" class="nav-link">ChatBot</a>
-              </div>
-            </div>
-          </div>
-        </nav>
-      {% endif %}
+        {% endif %}
 
-      <main class="container-fluid">
         {% block content %}
-          <!-- Mitsofoka eto le template miheriter anty template de base ty -->
+
         {% endblock %}
       </main>
 
-      <footer class="text-center text-lg-start bg-body-tertiary text-muted">
-        <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
-          © 2026 Copyright:
-          <a class="text-reset fw-bold" href="https://asjaweb.com//">ASJA</a>
+      <footer class="text-center text-muted py-4 border-top mt-auto bg-white">
+        <div class="container">
+          © 2026 • Gestion de bibliothèque
+          <a class="text-decoration-none" href="https://asjaweb.com/">ASJA</a>
         </div>
       </footer>
-      <!-- Footer -->
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme)
+        const toggle = document.getElementById('themeToggle')
+        if (!toggle) return
+        if (theme === 'dark') {
+          toggle.textContent = 'Clair'
+          toggle.classList.remove('btn-outline-light')
+          toggle.classList.add('btn-light')
+        } else {
+          toggle.textContent = 'Sombre'
+          toggle.classList.remove('btn-light')
+          toggle.classList.add('btn-outline-light')
+        }
+      }
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        const stored = localStorage.getItem('libraryTheme') || 'light'
+        applyTheme(stored)
+        const button = document.getElementById('themeToggle')
+        if (!button) return
+        button.addEventListener('click', () => {
+          const nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+          applyTheme(nextTheme)
+          localStorage.setItem('libraryTheme', nextTheme)
+        })
+      })
+    </script>
   </body>
 </html>
