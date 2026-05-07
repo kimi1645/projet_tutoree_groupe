@@ -9,13 +9,55 @@
     <link rel="stylesheet" href="{%static 'authentification/css/connexion.css'%}">
   </head>
   <body>
-    <form method="post">
-      {% csrf_token %}
-      {{ form }}
-      <button type="submit">Se connecter</button>
-      <p>
-        Vous n'avez pas encore du compte adhérents <a href="{% url 'verification' %}">cliqué ici</a>
-      </p>
-    </form>
+    <div class="container-fluid">
+      <div class="d-flex">
+        <div class="bg-primary">
+          <div class="d-flex">
+            <img src="{% static 'logo/logo.png' %}" alt="" class="img-fluid" height="25%" width="25%" />
+            <p>LibManager</p>
+          </div>
+          <div>
+            <h2>Votre bibliothèque universitaire, en ligne</h2>
+            <p>Gérez vos emprunts, réservez des ouvrages et suivez vos lectures en toute simplicité</p>
+            <ul>
+              <li>Réservation de livres en ligne</li>
+              <li>Suivi des emprunts en temps réel</li>
+              <li>Catelogue complet consultable</li>
+              <li>Notification de retours automatiques via email</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <nav>
+            <h2>Connexion</h2>
+            <p>Accèder à votre espace personnel</p>
+            <ul>
+              <li>Adhérent</li>
+              <li>Bibliothécaire</li>
+            </ul>
+          </nav>
+
+          <form method="post">
+            {% csrf_token %}
+            <div>{{ form.username.label_tag }}
+              {{ form.username }}</div>
+            <div>{{ form.password.label_tag }} {{ form.password }}</div>
+            <a href="{% url 'password_reset' %}">Mot de passe oublié ?</a>
+
+            <button type="submit">Se connecter</button>
+            <p>
+              Vous n'avez pas encore du compte adhérents <a href="{% url 'verification' %}">cliqué ici</a>
+            </p>
+          </form>
+          <div id="error">
+            {% if form.errors %}
+              {% for error in form.non_field_errors %}
+                <p class="alert alert-danger">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
