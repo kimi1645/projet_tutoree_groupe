@@ -6,9 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vérification</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+
   </head>
   <body>
-    <form method="POST">
+     <div class="d-flex justify-content-center align-items-top p-3 vh-20 bg-light" >
+        <div class="bg-white p-4 rounded shadow w-75" style="max-width: 400px;">
+    <form method="POST" >
       {% csrf_token %}
 
       {{ form }}
@@ -20,8 +23,10 @@
           {% endfor %}
         </div>
       {% endif %}
-
-      <button type="submit">Envoyer</button>
+  
+      <button type="submit" class="btn btn-primary " >Envoyer</button>
     </form>
+        </div>
+     </div>
   </body>
 </html>
