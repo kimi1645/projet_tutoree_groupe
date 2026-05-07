@@ -12,44 +12,44 @@
     </div>
 
     <div class="row gy-4">
-      <div class="col-lg-6">
+      <div class="col-lg-4">
         <div class="card card-soft p-4 h-100">
           <h2 class="h5 mb-3">Livres par catégorie</h2>
           <canvas id="livre_par_categorie"></canvas>
         </div>
       </div>
-      <div class="col-lg-6">
+      <div class="col-lg-4">
         <div class="card card-soft p-4 h-100">
           <h2 class="h5 mb-3">Adhérents par fonction</h2>
           <canvas id="adherent_par_fonction"></canvas>
         </div>
       </div>
-      <div class="col-lg-6">
+      <div class="col-lg-4">
         <div class="card card-soft p-4 h-100">
           <h2 class="h5 mb-3">Évolution des emprunts</h2>
           <canvas id="evolution_emprunt"></canvas>
         </div>
       </div>
-      <div class="col-lg-6">
-        <div class="card card-soft p-4 h-100">
+      <div class="col-lg-12">
+        <div class="card card-soft p-4 h-80">
           <h2 class="h5 mb-3">Emprunts par catégorie</h2>
           <canvas id="emprunt_par_categorie"></canvas>
         </div>
       </div>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4 mt-3">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-2 mt-2">
       <div class="col">
         <div class="card card-soft p-4 h-100">
           <h3 class="h6 text-uppercase text-primary">Taux de retour</h3>
-          <p class="display-6 mb-1">{{ taux_de_retour }}%</p>
+          <p class="display-6 mb-2">{{ taux_de_retour }}%</p>
           <p class="text-muted-soft">Livres retournés à temps</p>
         </div>
       </div>
       <div class="col">
         <div class="card card-soft p-4 h-100">
           <h3 class="h6 text-uppercase text-primary">Durée moyenne</h3>
-          <p class="display-6 mb-1">{{ duree_moyenne }}</p>
+          <p class="display-6 mb-2">{{ duree_moyenne }}</p>
           <p class="text-muted-soft">Jours d'emprunt</p>
         </div>
       </div>
@@ -63,7 +63,7 @@
       <div class="col">
         <div class="card card-soft p-4 h-100">
           <h3 class="h6 text-uppercase text-primary">Livres en retard</h3>
-          <p class="display-6 mb-1">{{ livres_en_retard }}</p>
+          <p class="display-6 mb-2">{{ livres_en_retard }}</p>
           <p class="text-muted-soft">Nécessitent un suivi</p>
         </div>
       </div>
