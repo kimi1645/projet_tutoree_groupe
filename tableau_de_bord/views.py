@@ -1,15 +1,17 @@
 import datetime
 import json
 
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from livres.models import Livre
-from adherents.models import Adherent
+from adherents.models import Adherent, Reservation
 from emprunts.models import Emprunt
 from django.db.models import F, Avg, DurationField, ExpressionWrapper, Sum, Count
 from django.db.models.functions import TruncMonth
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
+
 
 
 @login_required
@@ -20,7 +22,7 @@ def index_dashboard(request):
     #Puis on arrange par catégorie
     quantite_par_categorie = Livre.objects.values('categorie').annotate(total_quantite=Sum('quantite')).order_by('categorie')
     labels_livre_categorie = [q['categorie'] for q in quantite_par_categorie]
-    data_llivre_categorie = [q['total_quantite'] for q in quantite_par_categorie]
+    data_livre_categorie = [q['total_quantite'] for q in quantite_par_categorie]
     
     
     
@@ -77,8 +79,8 @@ def index_dashboard(request):
 
 
     #Emprunts par catégorie
-    emprunt_par_categorie = Emprunt.objects.values('ref_livre__categorie').annotate(total=Count('id')).order_by('ref_livre__categorie')
-    labels_emprunt_categorie = [e['ref_livre__categorie'] for e in emprunt_par_categorie]
+    emprunt_par_categorie = Emprunt.objects.values('reservation__ligneReservation__livre__categorie').annotate(total=Count('id')).order_by('reservation__ligneReservation__livre__categorie')
+    labels_emprunt_categorie = [e['reservation__ligneReservation__livre__categorie'] for e in emprunt_par_categorie]
     data_emprunt_categorie = [e['total'] for e in emprunt_par_categorie]
 
 
@@ -86,7 +88,7 @@ def index_dashboard(request):
     livres_en_retard = Emprunt.objects.filter(date_limite__lt=timezone.now().date(), statut='Non retourné').count()
     
     #Categories populaire
-    categorie_populaire = Emprunt.objects.values('ref_livre__categorie').annotate(total=Count('id')).order_by('-total').first()['ref_livre__categorie']
+    categorie_populaire = Emprunt.objects.values('reservation__ligneReservation__livre__categorie').annotate(total=Count('id')).order_by('-total').first()['reservation__ligneReservation__livre__categorie']
     
 
     #Taux de retour
@@ -110,7 +112,7 @@ def index_dashboard(request):
     
     return render(request, 'tableau_de_bord/index.html', {
         'labels_livre_categorie' : json.dumps(labels_livre_categorie),
-        'data_livre_categorie' : json.dumps(data_llivre_categorie),
+        'data_livre_categorie' : json.dumps(data_livre_categorie),
         'labels_adherent_fonction' : json.dumps(labels_adherent_fonction),
         'data_adherent_fonction' : json.dumps(data_adherent_fonction),
         'labels_emprunt_mois' : json.dumps(labels_emprunt_mois),
@@ -121,8 +123,33 @@ def index_dashboard(request):
         'taux_de_retour' : taux_de_retour,
         'duree_moyenne' : duree_moyenne,
         'categorie_populaire' : categorie_populaire,
-        'livres_en_retard' : livres_en_retard
+        'livres_en_retard' : livres_en_retard,
 
     })
 
 
+
+def liste_reservation_avalidee(request):
+    if request.method == "POST":
+        return HttpResponse("Requette POST")
+    else:
+        reservation_avec_details = Reservation.objects.prefetch_related('ligneReservation').filter(statut='En attente').order_by('-date_reservation')
+        return render(request, 'tableau_de_bord/reservation_non_validee.html', {
+            'reservation_avec_details' : reservation_avec_details
+        })
+    
+def valider_reservation(request, id):
+    reservation = Reservation.objects.get(id=id)
+
+    reservation.statut = 'Validée'
+    reservation.valider_par = request.user
+    reservation.date_validation = timezone.now().date()
+    reservation.save()
+
+
+    for detail in  reservation.ligneReservation.all():
+        Emprunt.objects.create(
+            reservation = reservation,
+            bibliothecaire = request.user
+        )
+    return redirect('listeReservationAValidee')

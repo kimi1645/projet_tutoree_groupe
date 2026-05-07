@@ -16,14 +16,10 @@
       </div>
     {% endif %}
     {% if emprunts %}
-      <div>
-        <a href="{% url 'enregistrerEmprunt' %}" class="btn btn-outline-info">Nouvelle emprunt</a>
-      </div>
       <table class="table">
         <thead>
           <tr>
-            <td>Réference</td>
-            <td>Emprunteur</td>
+            <td>Lié a réservation numero</td>
             <td>Responsable</td>
             <td>Date d'emprunt</td>
             <td>Date de limite</td>
@@ -36,8 +32,7 @@
         <tbody>
           {% for emp in emprunts %}
             <tr class="space-y-2">
-              <td>{{ emp.ref_livre }}</td>
-              <td>{{ emp.adherent }}</td>
+              <td>{{ emp.reservation }}</td>
               <td>{{ emp.bibliothecaire }}</td>
               <td>{{ emp.date_emprunt }}</td>
               <td>{{ emp.date_limite }}</td>

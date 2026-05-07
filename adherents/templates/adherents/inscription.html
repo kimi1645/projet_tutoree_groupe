@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inscription</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+  </head>
+  <body>
+    <form method="POST">
+      {% csrf_token %}
+
+      {{ form }}
+
+      {% if form.errors %}
+        <div class="alert alert-danger">
+          {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <button type="submit">Créer mon compte</button>
+    </form>
+  </body>
+</html>

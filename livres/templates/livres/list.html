@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  livres enregisté
+{% endblock %}
+
+{% block content %}
+  <div>
+    <form action="{% url 'rechercheLivre' %}" method="get" class="d-flex gap-4 m-4">
+      <input type="text" name="q" id="" class="form-control" />
+      <button type="submit" class="btn btn-outline-success">Rechercher</button>
+    </form>
+  </div>
+  {% if query and nbre_resultat == 0 %}
+    <p>
+      Aucun résultat pour <strong>"{{ query }}"</strong>
+    </p>
+  {% else %}
+    <div>
+      <a href="{% url 'ajouter_livre' %}">Ajouter un livre</a>
+    </div>
+    <div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <td>Réference</td>
+            <td>Titre</td>
+            <td>Auteur</td>
+            <td>Catégorie</td>
+            <td>quantité</td>
+            {% if user_role.role == 'bibliothecaire' %}
+              <td>Actions</td>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for livre in livres %}
+            <tr>
+              <td>{{ livre.reference }}</td>
+              <td>{{ livre.titre }}</td>
+              <td>{{ livre.auteur }}</td>
+              <td>{{ livre.categorie }}</td>
+              <td>{{ livre.quantite }}</td>
+              {% if user_role.role == 'bibliothecaire' %}
+                <td>
+                  <a href="{% url 'modifierLivre' livre.reference %}" class="btn btn-success">Modifier</a>
+                  <a href="{% url 'supprimerLivre' livre.reference %}" class="btn btn-danger">Supprimer</a>
+                </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div>
+    <h1>Liste des adhérents</h1>
+    <p>Gérez les comptes membres</p>
+    <form action="" method="get" class="d-flex gap-4">
+      <input type="search" name="q" class="form-control" id="" placeholder="Rechercher par nom, matricule ou email..." />
+      <button type="submit" class="btn btn-success">Rechercher</button>
+    </form>
+
+    <a href="{% url 'ajouterAdherent' %}" class="btn btn-info">Ajouter un adhérent</a>
+  </div>
+  <div>
+    <table class="table">
+      <thead>
+        <tr>
+          <td>Matricule</td>
+          <td>Nom</td>
+          <td>Prénom</td>
+          <td>Email</td>
+          <td>Fonctions</td>
+          <td>Actions</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% for adherent in adherents %}
+          <tr>
+            <td>{{ adherent.matricule }}</td>
+            <td>{{ adherent.nom }}</td>
+            <td>{{ adherent.prenom }}</td>
+            <td>{{ adherent.email }}</td>
+            <td>{{ adherent.fonction }}</td>
+            <td>
+              <a href="{% url 'modifierAdherent' adherent.matricule %}" class="btn btn-info">Modifier</a>
+              <a href="#" class="btn btn-danger">Supprimer</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

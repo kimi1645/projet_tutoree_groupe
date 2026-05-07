@@ -68,7 +68,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'bibliotheque.context_processors.dashboard_stats',#Definir le context_processor pour envoyer les données de base
+                'bibliotheque.context_processors.dashboard_stats',#Definir le context_processor pour envoyer les données de base,
+                'bibliotheque.context_processors.user_role',
             ],
         },
     },

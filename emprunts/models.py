@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 
 from django.db import models
 from livres.models import Livre
-from adherents.models import Adherent
+from adherents.models import Adherent, Reservation
 from django.contrib.auth.models import User
 
 STATUT = [
@@ -11,9 +11,7 @@ STATUT = [
     ('Non retourné', 'Non retourné')
 ]
 class Emprunt(models.Model):
-    #
-    ref_livre = models.ForeignKey(Livre, on_delete=models.CASCADE)
-    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE)
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
     bibliothecaire = models.ForeignKey(User,on_delete=models.CASCADE)
     date_emprunt = models.DateField(auto_now_add=True)
     #datetime.now() + timedelta(days=15)  === Limitena 15 jours aorinanle nangalany azy ny date limite
