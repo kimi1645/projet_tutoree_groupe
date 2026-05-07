@@ -55,13 +55,13 @@
               {% endif %}
             </ul>
             <div class="d-flex align-items-center gap-2">
+              <button id="themeToggle" type="button" class="btn btn-sm btn-outline-light btn-theme-toggle" aria-label="Basculer thème"><img src="{% static 'icone/sombre.png' %}" alt="Mode sombre" width="20" height="20" class="theme-icon" /></button>
               {% if user.is_authenticated %}
                 <span class="navbar-text text-white-75">Bonjour {{ request.user.username }}</span>
-                <a href="{% url 'seDeconnecter' %}" class="btn btn-outline-light btn-sm">Déconnexion</a>
+                <a href="{% url 'seDeconnecter' %}" class="btn btn-outline-light btn-sm"><img src="{% static 'icone/deconnecter.png' %}" alt="Se deconnecter" width="30" height="30" /></a>
               {% else %}
                 <a href="{% url 'seConnecter' %}" class="btn btn-outline-light btn-sm">Connexion</a>
               {% endif %}
-              <button id="themeToggle" type="button" class="btn btn-sm btn-outline-light btn-theme-toggle" aria-label="Basculer thème">Sombre</button>
             </div>
           </div>
         </div>
@@ -98,12 +98,16 @@
         document.documentElement.setAttribute('data-theme', theme)
         const toggle = document.getElementById('themeToggle')
         if (!toggle) return
+        const icon = toggle.querySelector('.theme-icon')
+        if (!icon) return
         if (theme === 'dark') {
-          toggle.textContent = 'Clair'
+          icon.src = "{% static 'icone/clair.png' %}"
+          icon.alt = 'Mode clair'
           toggle.classList.remove('btn-outline-light')
           toggle.classList.add('btn-light')
         } else {
-          toggle.textContent = 'Sombre'
+          icon.src = "{% static 'icone/sombre.png' %}"
+          icon.alt = 'Mode sombre'
           toggle.classList.remove('btn-light')
           toggle.classList.add('btn-outline-light')
         }
