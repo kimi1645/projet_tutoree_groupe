@@ -1,3 +1,4 @@
+
 .space{
     padding: 12px; 
    
@@ -7,9 +8,14 @@
     border-radius: 0.5rem;
     
 }
-.d-flex{
-    position: fixed;
-    display: flex;
-    left: 20%;
-    top: 20%;
+.place{
+    padding: 10px;
 }
+.btn {
+    width: 100%;
+}
+.btn::hover{
+    background-color: white;
+    color: #000000;
+}
+
