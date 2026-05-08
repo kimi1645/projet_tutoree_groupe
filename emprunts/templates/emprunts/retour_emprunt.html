@@ -1,44 +1,57 @@
 {% extends 'base.html' %}
 
 {% block title %}
-  Enregistrer retour
+  Retour d'emprunt
 {% endblock %}
 
 {% block content %}
-  <div class="border">
-    <h3>Informations de l'Emprunt</h3>
-    <p>Détails du livre et de l'emprunteur</p>
-    <div>
-      <p>Livre</p>
-      <p>{{ emprunt.ref_livre }}</p>
-    </div>
-    <div>
-      <p>Emprunteur</p>
-      <p>{{ emprunt.adherent }}</p>
-    </div>
-    <div>
-      <p>Date d'emprunt</p>
-      <p>{{ emprunt.date_emprunt }}</p>
-    </div>
-    <div>
-      <p>Date limite</p>
-      <p>{{ emprunt.date_limite }}</p>
-    </div>
-  </div>
-  <div class="border">
-    <form method="post">
-      {% csrf_token %}
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card card-soft shadow-sm border-0 mb-4">
+        <div class="card-body">
+          <h2 class="h5 mb-3">Informations de l'emprunt</h2>
+          <p class="text-muted-soft mb-4">Détails du livre et de l'emprunteur.</p>
+          <div class="row g-3">
+            <div class="col-6">
+              <strong>Livre</strong>
+              <p class="mb-0">{{ emprunt.ref_livre }}</p>
+            </div>
+            <div class="col-6">
+              <strong>Emprunteur</strong>
+              <p class="mb-0">{{ emprunt.adherent }}</p>
+            </div>
+            <div class="col-6">
+              <strong>Date d'emprunt</strong>
+              <p class="mb-0">{{ emprunt.date_emprunt }}</p>
+            </div>
+            <div class="col-6">
+              <strong>Date limite</strong>
+              <p class="mb-0">{{ emprunt.date_limite }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <h3>Enregistrer le retour</h3>
-      <p>Confirmez la date de retour du livre</p>
-      {{ form }}
-      <a href="btn">Annuler</a>
-      <button type="submit">Confirmer le Retour</button>
-    </form>
+      <div class="card card-soft shadow-sm border-0">
+        <div class="card-body">
+          <h2 class="h5 mb-3">Enregistrer le retour</h2>
+          <p class="text-muted-soft mb-4">Confirmez la date de retour du livre.</p>
+          <form method="post" class="row g-3">
+            {% csrf_token %}
+            {{ form }}
+            <div class="col-12 d-flex justify-content-between">
+              <a href="{% url 'listeEmprunt' %}" class="btn btn-outline-secondary">Annuler</a>
+              <button type="submit" class="btn btn-primary">Confirmer le retour</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
     const today = new Date().toISOString().split('T')[0]
-    document.getElementById('date_retour').value = today
+    const retourField = document.getElementById('date_retour')
+    if (retourField) retourField.value = today
   </script>
 {% endblock %}
