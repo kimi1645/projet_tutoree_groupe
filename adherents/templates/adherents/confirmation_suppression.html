@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Confirmation
+{% endblock %}
+
+{% block content %}
+  <div>
+    <div>
+      <p>{{ adherent.matricule }}</p>
+      <p>{{ adherent.nom }}</p>
+      <p>{{ adherent.prenom }}</p>
+      <p>{{ adherent.email }}</p>
+      <p>{{ adherent.fonction }}</p>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit">Supprimer</button>
+      <a href="#">Annuler</a>
+    </form>
+  </div>
+{% endblock %}

@@ -45,7 +45,7 @@
                 <td>{{ adherent.fonction }}</td>
                 <td class="d-flex gap-2">
                   <a href="{% url 'modifierAdherent' adherent.matricule %}" class="btn btn-sm btn-info">Modifier</a>
-                  <a href="#" class="btn btn-sm btn-danger">Supprimer</a>
+                  <a href="{% url 'supprimerAdherent' adherent.matricule %}" class="btn btn-sm btn-danger">Supprimer</a>
                 </td>
               </tr>
             {% endfor %}
