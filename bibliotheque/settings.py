@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'emprunts',
     'livres',
     'adherents',
+    'import_export'
 ]
 
 MIDDLEWARE = [
