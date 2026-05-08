@@ -41,6 +41,7 @@
                 {% if user_role.role == 'bibliothecaire' %}
                   <td>
                     <a href="{% url 'validerReservation' reservation.id %}" class="btn btn-sm btn-info">Valider</a>
+                    <a href="{% url 'refuserReservation' reservation.id %}">Réfusé</a>
                   </td>
                 {% endif %}
               </tr>

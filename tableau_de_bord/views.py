@@ -171,6 +171,16 @@ def valider_reservation(request, id):
         )
     return redirect('listeReservationAValidee')
 
+def refuser_reservation(request, id):
+    reservation = Reservation.objects.get(id=id)
+
+    reservation.statut = 'Refusée'
+    reservation.valider_par = request.user
+    reservation.date_validation = timezone.now().date()
+    reservation.save()
+
+    
+    return redirect('listeReservationAValidee')
 
 def mes_emprunts(request):
     emprunts = Emprunt.objects.filter(reservation__adherent__compteadherent__user=request.user, statut='Retourné')
