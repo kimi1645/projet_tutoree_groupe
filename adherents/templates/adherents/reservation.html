@@ -1,113 +1,94 @@
 {% extends 'base.html' %}
+
 {% block title %}
   Réservation
 {% endblock %}
+
 {% block content %}
-  <form method="post">
-    {% csrf_token %}
-    <div>{{ reservation_form }}</div>
-    {{ detail_reservation_form.management_form }}
+  <div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-9">
+      <div class="card card-soft shadow-sm border-0">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start mb-4">
+            <div>
+              <h2 class="h4 mb-1">Nouvelle réservation</h2>
+              <p class="text-muted-soft mb-0">Choisissez les livres à réserver et envoyez votre demande.</p>
+            </div>
+            <button type="button" id="ajouter-champ" class="btn btn-outline-primary">Ajouter un livre</button>
+          </div>
 
-    <!-- Erreurs formset -->
-    <div>
-      {% if detail_reservation_form.non_form_errors %}
-        {% for error in detail_reservation_form.non_form_errors %}
-          <p style="color:red;">{{ error }}</p>
-        {% endfor %}
-      {% endif %}
-    </div>
+          <form method="post" class="row g-4">
+            {% csrf_token %}
+            <div class="col-12">{{ reservation_form }}</div>
+            {{ detail_reservation_form.management_form }}
 
-    <div id="formset-container">
-      {% for form in detail_reservation_form %}
-        <div class="form-inline">
-          {{ form.as_p }}
-          <!-- Bouton supprimer pour formulaires existants -->
-          <button type="button" class="delete-form" style="color:red;">Supprimer</button>
+            {% if detail_reservation_form.non_form_errors %}
+              <div class="alert alert-danger form-alert">
+                {% for error in detail_reservation_form.non_form_errors %}
+                  <p class="mb-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div id="formset-container" class="row g-3">
+              {% for form in detail_reservation_form %}
+                <div class="col-12 reservation-item border rounded-3 p-3 bg-white shadow-sm d-flex flex-column gap-3">
+                  {{ form.as_p }}
+                  <button type="button" class="btn btn-sm btn-outline-danger align-self-end delete-form">Supprimer</button>
+                </div>
+              {% endfor %}
+            </div>
+
+            <div id="empty-form" style="display:none;">{{ detail_reservation_form.empty_form.as_p }}</div>
+            <div class="col-12 text-end">
+              <button type="submit" class="btn btn-primary">Envoyer la réservation</button>
+            </div>
+          </form>
         </div>
-      {% endfor %}
+      </div>
     </div>
-
-    <!-- Formulaire vide caché -->
-    <div id="empty-form" style="display:none;">{{ detail_reservation_form.empty_form.as_p }}</div>
-
-    <button type="button" id="ajouter-champ">Ajouter un livre</button>
-    <button type="submit">Envoyer</button>
-  </form>
+  </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      //Récuperation de la section avec id = formset-container
       const formsetContainer = document.getElementById('formset-container')
-      //Récupération bouton ajouterChamp
       const buttonAjouter = document.getElementById('ajouter-champ')
-      //Récupération l'élement caché de Django (ManagementForm) qui stocke le nombre total de formulaires
       const totalForms = document.getElementById('id_{{ detail_reservation_form.prefix }}-TOTAL_FORMS')
-    
-      //Récuperation de la formulaire vide caché
       const emptyFormDiv = document.getElementById('empty-form')
     
-      // Ajouter un nouveau formulaire
       function ajouterChamp() {
-        //Prend le HTML du formulaire vide et remplace toutes les occurrences de la chaîne __prefix__ par l'index actuel (formCount). Django utilise __prefix__ comme espace réservé dans ses formulaires vides.
         const formCount = parseInt(totalForms.value)
-        const nouveauFormHTML = emptyFormDiv.innerHTML.replace(/__prefix__/g, formCount) //On met à jour le prefixe
-    
-        //Crétion nouveau element hml div
+        const nouveauFormHTML = emptyFormDiv.innerHTML.replace(/__prefix__/g, formCount)
         const nouveauDiv = document.createElement('div')
-        nouveauDiv.classList.add('form-inline')
+        nouveauDiv.className = 'col-12 reservation-item border rounded-3 p-3 bg-white shadow-sm d-flex flex-column gap-3'
         nouveauDiv.innerHTML = nouveauFormHTML
-    
-        //Ajouter le bouton supprimer
         const btnSupprimer = document.createElement('button')
-        //Ajout style
         btnSupprimer.type = 'button'
-        btnSupprimer.className = 'delete-form'
-        btnSupprimer.style.color = 'red'
+        btnSupprimer.className = 'btn btn-sm btn-outline-danger align-self-end delete-form'
         btnSupprimer.textContent = 'Supprimer'
-        nouveauDiv.appendChild(btnSupprimer) //Ajout bouton supprimer au DOm
-    
+        nouveauDiv.appendChild(btnSupprimer)
         formsetContainer.appendChild(nouveauDiv)
-        totalForms.value = formCount + 1 //On met à jour le nombre total de formulaire
+        totalForms.value = formCount + 1
       }
     
-      //On ajout un écouteur d'évenement au bouton ajouter
       buttonAjouter.addEventListener('click', ajouterChamp)
-    
-      //Supprimer un formulaire
-      //On écoute le clique sur forssetContainer
-      //Si l'élement cliqué (e.target) possède la classe delete-form, on lance la logique de suppression
     
       formsetContainer.addEventListener('click', (e) => {
         if (e.target && e.target.classList.contains('delete-form')) {
-          //Trouve le parent le plus proche ayant la class form-inline
-          const formDiv = e.target.closest('.form-inline')
-    
-          // Vérifier s'il reste au moins 1 formulaire
-          const forms = formsetContainer.querySelectorAll('.form-inline')
+          const formDiv = e.target.closest('.reservation-item')
+          const forms = formsetContainer.querySelectorAll('.reservation-item')
           if (forms.length <= 1) {
             alert('Vous devez avoir au moins un livre !')
             return
           }
-    
-          formDiv.remove() //Suprimmer le formDiv du DOM
-    
-          //Renuméroter après suppression
-          //On met à jour le nombre de formulaires restants
-          const formsRestants = formsetContainer.querySelectorAll('.form-inline')
+          formDiv.remove()
+          const formsRestants = formsetContainer.querySelectorAll('.reservation-item')
           totalForms.value = formsRestants.length
-    
-          //On  parcourt le formulaire restant et met à jour l'index pour éviter les erreurs au niveau du traitements Django
           formsRestants.forEach((form, index) => {
             form.querySelectorAll('input, select, textarea, label').forEach((el) => {
-              if (el.name) {
-                el.name = el.name.replace(/-\d+-/, `-${index}-`)
-              }
-              if (el.id) {
-                el.id = el.id.replace(/-\d+-/, `-${index}-`) //
-              }
-              if (el.htmlFor) {
-                el.htmlFor = el.htmlFor.replace(/-\d+-/, `-${index}-`)
-              }
+              if (el.name) el.name = el.name.replace(/-\d+-/, `-${index}-`)
+              if (el.id) el.id = el.id.replace(/-\d+-/, `-${index}-`)
+              if (el.htmlFor) el.htmlFor = el.htmlFor.replace(/-\d+-/, `-${index}-`)
             })
           })
         }

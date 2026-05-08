@@ -11,5 +11,5 @@ class FormulaireAuthentification(AuthenticationForm):
     }),label="Nom d'utilisateur")
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class' : 'form-control',
-        #'pattern' : "[0-9a-fA-F]{4,8}",
+        'placeholder' : 'Entrez votre mots de passe'
     }), label="Mots de passe")
