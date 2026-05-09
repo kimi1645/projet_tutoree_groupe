@@ -29,3 +29,27 @@ class LivreForm(forms.ModelForm) :
                 'placeholder' : 'quantite'
             }),
             }
+        
+
+class LivreModificationForm(forms.ModelForm) : 
+    class Meta :
+        model = Livre
+        fields = ['reference' , 'titre' , 'auteur' , 'categorie']
+        widgets = {
+            'reference' : forms.TextInput(attrs={
+                'class' : STYLE_DE_BASE , 
+                'placeholder' : 'reference'
+        }),
+            'titre' : forms.TextInput(attrs={
+                'class' : STYLE_DE_BASE, 
+                'placeholder' : 'titre'
+            }),
+            'auteur' : forms.TextInput(attrs={
+                'class' : STYLE_DE_BASE, 
+                'placeholder' : 'auteur'
+            }),
+            'categorie' : forms.Select(attrs={
+                'class' : STYLE_DE_BASE, 
+                'placeholder' : 'categorie'
+            }),
+            }

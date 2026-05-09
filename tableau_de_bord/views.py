@@ -1,8 +1,9 @@
 import datetime
 import json
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect, render
+from bibliotheque.utils import get_user_role
 from livres.models import Livre
 from adherents.models import Adherent, Reservation
 from emprunts.models import Emprunt
@@ -148,45 +149,60 @@ def index_dashboard(request):
         return render(request, 'tableau_de_bord/index.html')
 
 
-
+@login_required
 def liste_reservation_avalidee(request):
-    if request.method == "POST":
-        return HttpResponse("Requette POST")
+    if get_user_role(request.user)['role'] == 'bibliothecaire':
+        if request.method == "POST":
+            return HttpResponse("Requette POST")
+        else:
+            reservation_avec_details = Reservation.objects.prefetch_related('ligneReservation').filter(statut='En attente').order_by('-date_reservation')
+            return render(request, 'tableau_de_bord/reservation_non_validee.html', {
+                'reservation_avec_details' : reservation_avec_details
+            })
     else:
-        reservation_avec_details = Reservation.objects.prefetch_related('ligneReservation').filter(statut='En attente').order_by('-date_reservation')
-        return render(request, 'tableau_de_bord/reservation_non_validee.html', {
-            'reservation_avec_details' : reservation_avec_details
-        })
+        return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
+
     
 def valider_reservation(request, id):
-    reservation = Reservation.objects.get(id=id)
+    if get_user_role(request.user)['role'] == 'bibliothecaire':
 
-    reservation.statut = 'Validée'
-    reservation.valider_par = request.user
-    reservation.date_validation = timezone.now().date()
-    reservation.save()
+        reservation = Reservation.objects.get(id=id)
+
+        reservation.statut = 'Validée'
+        reservation.valider_par = request.user
+        reservation.date_validation = timezone.now().date()
+        reservation.save()
 
 
-    for detail in  reservation.ligneReservation.all():
-        Emprunt.objects.create(
-            reservation = reservation,
-            bibliothecaire = request.user
-        )
-    return redirect('listeReservationAValidee')
+        for detail in  reservation.ligneReservation.all():
+            Emprunt.objects.create(
+                reservation = reservation,
+                bibliothecaire = request.user
+            )
+        return redirect('listeReservationAValidee')
+    else:
+        return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
 
+@login_required
 def refuser_reservation(request, id):
-    reservation = Reservation.objects.get(id=id)
+    if get_user_role(request.user)['role'] == 'bibliothecaire':
+        reservation = Reservation.objects.get(id=id)
 
-    reservation.statut = 'Refusée'
-    reservation.valider_par = request.user
-    reservation.date_validation = timezone.now().date()
-    reservation.save()
+        reservation.statut = 'Refusée'
+        reservation.valider_par = request.user
+        reservation.date_validation = timezone.now().date()
+        reservation.save()
 
     
-    return redirect('listeReservationAValidee')
+        return redirect('listeReservationAValidee')
+    else:
+        return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
 
 def mes_emprunts(request):
-    emprunts = Emprunt.objects.filter(reservation__adherent__compteadherent__user=request.user, statut='Retourné')
-    return render(request, "tableau_de_bord/mes_emprunts.html", {
-        'emprunts' : emprunts
-    })
+    if get_user_role(request.user)['role'] == 'bibliothecaire':
+        return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
+    else:
+        emprunts = Emprunt.objects.filter(reservation__adherent__compteadherent__user=request.user, statut='Retourné')
+        return render(request, "tableau_de_bord/mes_emprunts.html", {
+            'emprunts' : emprunts
+        })
