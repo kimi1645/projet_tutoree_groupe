@@ -5,3 +5,4 @@ plan_bibliotheque_django.html
 *.sqlite3
 .env
 Li.csv
+test.csv
