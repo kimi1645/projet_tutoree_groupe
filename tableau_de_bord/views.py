@@ -62,7 +62,7 @@ def index_dashboard(request):
             .order_by('mois')
         )
 
-
+        
         emprunt_journalier = (
             Emprunt.objects
             .values('date_emprunt')
@@ -145,7 +145,7 @@ def index_dashboard(request):
             'genres_lus' : genres_lus
         })
     except:
-        return render(request, 'tableau_de_bord/page_maintenance.html')
+        return render(request, 'tableau_de_bord/index.html')
 
 
 
