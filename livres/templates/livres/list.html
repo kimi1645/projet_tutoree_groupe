@@ -5,10 +5,11 @@
 {% endblock %}
 
 {% block content %}
+  {% load static %}
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
     <form action="{% url 'rechercheLivre' %}" method="get" class="d-flex gap-2 w-100 w-md-auto">
       <input type="text" name="q" placeholder="Rechercher un livre..." class="form-control" />
-      <button type="submit" class="btn btn-outline-success">Rechercher</button>
+      <button type="submit" class="btn btn-outline-success"><img src="{% static 'icone/loupe.png' %}" alt="Rechercher" width="20" height="20" /></button>
     </form>
     {% if user_role.role == 'bibliothecaire' %}
       <a href="{% url 'ajouter_livre' %}" class="btn btn-primary">Ajouter un livre</a>
@@ -46,8 +47,8 @@
                   <td>{{ livre.quantite }}</td>
                   {% if user_role.role == 'bibliothecaire' %}
                     <td class="d-flex gap-2">
-                      <a href="{% url 'modifierLivre' livre.reference %}" class="btn btn-sm btn-success">Modifier</a>
-                      <a href="{% url 'supprimerLivre' livre.reference %}" class="btn btn-sm btn-danger">Supprimer</a>
+                      <a href="{% url 'modifierLivre' livre.reference %}" class="btn btn-sm"><img src="{% static 'icone/modifier.png' %}" alt="" width="20" height="20" /></a>
+                      <a href="{% url 'supprimerLivre' livre.reference %}" class="btn btn-sm"><img src="{% static 'icone/supprimer.png' %}" alt="" width="20" height="20" /></a>
                     </td>
                   {% endif %}
                 </tr>

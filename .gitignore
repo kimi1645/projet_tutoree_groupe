@@ -4,3 +4,4 @@ plan_bibliotheque_django.html
 *.drawio
 *.sqlite3
 .env
+Li.csv

@@ -109,7 +109,11 @@ def index_dashboard(request):
     
     duree_moyenne = resultat['moyenne'].days if resultat['moyenne'] else 0
     
+    emprunts_en_cours = Emprunt.objects.filter(reservation__adherent__compteadherent__user=request.user, statut='Non retourné')
     
+
+    #Genres lu adhérent
+    genres_lus = Emprunt.objects.values('reservation__ligneReservation__livre__categorie').annotate(total=Count('id')).order_by('-total')[:5]
     return render(request, 'tableau_de_bord/index.html', {
         'labels_livre_categorie' : json.dumps(labels_livre_categorie),
         'data_livre_categorie' : json.dumps(data_livre_categorie),
@@ -124,7 +128,8 @@ def index_dashboard(request):
         'duree_moyenne' : duree_moyenne,
         'categorie_populaire' : categorie_populaire,
         'livres_en_retard' : livres_en_retard,
-
+        'emprunts_en_cours' : emprunts_en_cours,
+        'genres_lus' : genres_lus
     })
 
 
@@ -153,3 +158,10 @@ def valider_reservation(request, id):
             bibliothecaire = request.user
         )
     return redirect('listeReservationAValidee')
+
+
+def mes_emprunts(request):
+    emprunts = Emprunt.objects.filter(reservation__adherent__compteadherent__user=request.user, statut='Retourné')
+    return render(request, "tableau_de_bord/mes_emprunts.html", {
+        'emprunts' : emprunts
+    })

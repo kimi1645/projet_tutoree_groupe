@@ -43,6 +43,18 @@ def modifier_adherent(request, id):
             'form' : form
         })
 
+def supprimer_adherent(request, id):
+    adherent = get_object_or_404(Adherent, pk=id)
+    if request.method == "POST":
+        adherent.delete()
+        return redirect('listeAdherent')
+    else:
+        
+        return render(request, 'adherents/confirmation_suppression.html', {
+            'adherent' : adherent
+        })
+
+
 
 def verification(request):
     if request.method == "POST":

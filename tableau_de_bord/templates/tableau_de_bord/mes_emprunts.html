@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Mes emprunts
+{% endblock %}
+
+{% block content %}
+  <table class="table">
+    <thead>
+      <tr>
+        <td>Réservation numero</td>
+        <td>Effectué par</td>
+        <td>date_emprunt</td>
+        <td>date_limite</td>
+        <td>date_retour</td>
+        <td>statut</td>
+      </tr>
+    </thead>
+    <tbody>
+      {% for emp in emprunts %}
+        <tr>
+          <td>{{ emp.reservation }}</td>
+          <td>{{ emp.bibliothecaire }}</td>
+          <td>{{ emp.date_emprunt }}</td>
+          <td>{{ emp.date_limite }}</td>
+          <td>{{ emp.date_retour }}</td>
+          <td>{{ emp.statut }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
