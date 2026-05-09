@@ -12,9 +12,12 @@ from bibliotheque.utils import get_user_role
 
 @login_required
 def liste_adherents(request):
-    adherents = Adherent.objects.all()
-    return render(request, "adherents/liste_adherent.html", 
+    if get_user_role(request.user)['role'] == 'bibliothecaire':
+        adherents = Adherent.objects.all()
+        return render(request, "adherents/liste_adherent.html", 
                   {'adherents' : adherents})
+    else:
+        return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
 
 @login_required
 def ajouter_adherent(request):
