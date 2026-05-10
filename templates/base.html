@@ -58,9 +58,8 @@
                     <li class="nav-item">
                       <a class="nav-link" href="{% url 'mesEmprunts' %}">Mes emprunts</a>
                     </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="{% url 'chatbot' %}">Chatbot</a>
-                    </li>
+                   
+                      
                   {% endif %}
                 {% endif %}
               </ul>
@@ -91,6 +90,8 @@
         {% block content %}
 
         {% endblock %}
+        <a class="nav-link d-flex justify-content-center align-items-start p-2" class="" href="{% url 'chatbot' %}">Chatbot</a>
+                
       </main>
 
       <footer class="text-center text-muted py-4 border-top mt-auto bg-white">
