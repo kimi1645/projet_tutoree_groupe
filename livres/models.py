@@ -5,7 +5,7 @@ CATEGORIE = [
     ('Math','Mathématique'),
     ('Physique', 'Physique'),
     ('Littérature','Littérature'),
-    ('Droit', 'Doit'),
+    ('Droit', 'Droit'),
     ("Memoire de fin d'étude", "Memoire de fin d'étude"),
     ('Thèse','Thèse')
 ]
