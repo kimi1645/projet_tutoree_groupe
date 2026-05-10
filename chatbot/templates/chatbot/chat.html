@@ -1,15 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{%load static%}
+ <link rel="stylesheet" href="{%static 'css/chat.css' %}">
+ <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
   <div class="chat-container">
     <div id="chatbox"></div>
-
-    <div class="chat-input">
-      <input type="text" id="userInput" placeholder="Posez votre question..." />
-      <button onclick="envoyerMessage()">Envoyer</button>
+  <div  >
+    <div class="chat-input " >
+      <input type="text" id="userInput"  placeholder="Posez votre question..." />
+      <button onclick="envoyerMessage()" class="btn btn-primary "> <strong>Envoyer</strong> </button>
     </div>
   </div>
-
+</div>
   <script>
     // Historique des messages
     let historique = []
@@ -63,7 +66,7 @@
     
       // On itère l'historique du message
       data.historique.forEach((item) => {
-        chatbox.innerHTML += item.role === 'user' ? `<div class="d-flex justify-content-end"><div class="message user alert alert-secondary"><p>${item.message}</p></div></div>` : `<div class="message bot alert alert-light"><p>🤖 ${item.message}</p></div>`
+        chatbox.innerHTML += item.role === 'user' ? `<div class="d-flex justify-content-end p-0.5"><div class="message user alert alert-secondary"><p>${item.message}</p></div></div>` : `<div class="message bot alert alert-light"><p>🤖 ${item.message}</p></div>`
       })
       chatbox.scrollTop = chatbox.scrollHeight
     }

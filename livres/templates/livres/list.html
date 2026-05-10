@@ -7,9 +7,9 @@
 {% block content %}
   {% load static %}
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
-    <form action="{% url 'rechercheLivre' %}" method="get" class="d-flex gap-2 w-100 w-md-auto">
+    <form action="{% url 'rechercheLivre' %}" method="get" class="d-flex gap-2 w-100  w-md-auto">
       <input type="text" name="q" placeholder="Rechercher un livre..." class="form-control" />
-      <button type="submit" class="btn btn-outline-success"><img src="{% static 'icone/loupe.png' %}" alt="Rechercher" width="20" height="20" /></button>
+      <button type="submit" class="btn btn-outline-primary"><img src="{% static 'icone/loupe.png' %}" alt="Rechercher" width="23" height="20" /></button>
     </form>
     {% if user_role.role == 'bibliothecaire' %}
       <a href="{% url 'ajouter_livre' %}" class="btn btn-primary">Ajouter un livre</a>
