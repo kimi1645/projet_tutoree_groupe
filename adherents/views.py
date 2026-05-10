@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Adherent, CompteAdherent, Reservation
 from .forms import FormulaireAjoutAdherent, FormulaireInscription, VerificationParEmail, FormulaireReservation, DetailReservationFormSet, DetailReservationInlineFormSet
@@ -6,55 +6,72 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.core.mail import send_mail
 import random
-from django.conf import settings
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from bibliotheque.utils import get_user_role
 
+@login_required
 def liste_adherents(request):
-    adherents = Adherent.objects.all()
-    return render(request, "adherents/liste_adherent.html", 
+    if get_user_role(request.user)['role'] == 'bibliothecaire':
+        adherents = Adherent.objects.all()
+        return render(request, "adherents/liste_adherent.html", 
                   {'adherents' : adherents})
+    else:
+        return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
 
+@login_required
 def ajouter_adherent(request):
-    if request.method == "POST":
-        form = FormulaireAjoutAdherent(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('listeAdherent')
+    if get_user_role(request.user)['role'] == 'bibliothecaire':
+        if request.method == "POST":
+            form = FormulaireAjoutAdherent(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('listeAdherent')
+            else:
+                return HttpResponse("Vérifiez bien vos données")
         else:
-            return HttpResponse("Vérifiez bien vos données")
+            form = FormulaireAjoutAdherent()
+            return render(request, "adherents/ajouter.html", {
+                'form' : form
+            })
     else:
-        form = FormulaireAjoutAdherent()
-        return render(request, "adherents/ajouter.html", {
-            'form' : form
-        })
+        return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
     
-
+@login_required
 def modifier_adherent(request, id):
-    adherent = get_object_or_404(Adherent, pk=id)
-    if request.method == "POST":
-        form = FormulaireAjoutAdherent(request.POST, instance=adherent)
-        if form.is_valid():
-            form.save()
+    if get_user_role(request.user)['role'] == 'bibliothecaire':
+        adherent = get_object_or_404(Adherent, pk=id)
+        if request.method == "POST":
+            form = FormulaireAjoutAdherent(request.POST, instance=adherent)
+            if form.is_valid():
+                form.save()
+                return redirect('listeAdherent')
+            else:
+                return HttpResponse("Modification non valide")
+        else:
+            form = FormulaireAjoutAdherent(instance=adherent)
+            return render(request, "adherents/modifier.html", {
+                'form' : form
+            })
+    else:
+        return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
+
+@login_required
+def supprimer_adherent(request, id):
+    if get_user_role(request.user)['role'] == 'bibliothecaire':
+        adherent = get_object_or_404(Adherent, pk=id)
+        if request.method == "POST":
+            adherent.delete()
             return redirect('listeAdherent')
         else:
-            return HttpResponse("Modification non valide")
-    else:
-        form = FormulaireAjoutAdherent(instance=adherent)
-        return render(request, "adherents/modifier.html", {
-            'form' : form
-        })
-
-def supprimer_adherent(request, id):
-    adherent = get_object_or_404(Adherent, pk=id)
-    if request.method == "POST":
-        adherent.delete()
-        return redirect('listeAdherent')
-    else:
         
-        return render(request, 'adherents/confirmation_suppression.html', {
-            'adherent' : adherent
-        })
+            return render(request, 'adherents/confirmation_suppression.html', {
+                'adherent' : adherent
+            })
+    else:
+        return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
 
+@login_required
 def recherche(request) :
     query = request.GET.get('q','').strip()
     if not query:
@@ -139,43 +156,51 @@ def inscription(request):
 
 
 #Views qui gère la réservation
+@login_required
 def reservation_avec_detail(request):
-    if request.method == "POST":
-        reservation_form = FormulaireReservation(request.POST)
+    if get_user_role(request.user)['role'] == 'adherent':
+        if request.method == "POST":
+            reservation_form = FormulaireReservation(request.POST)
        
-        #Vérifiation si la formulaire est ok
-        if reservation_form.is_valid():
-            reservation = reservation_form.save(commit=False)
-            #Recuperer l'adhérent connecté
-            adherent = request.user.compteadherent.personne
-            reservation.adherent = adherent
-            detail_reservation_form = DetailReservationInlineFormSet(request.POST, instance=reservation)
-            if detail_reservation_form.is_valid():
-                #Enregistrement après validation
-                reservation.save()
-                detail_reservation_form.save()
+            #Vérifiation si la formulaire est ok
+            if reservation_form.is_valid():
+                reservation = reservation_form.save(commit=False)
+                #Recuperer l'adhérent connecté
+                adherent = request.user.compteadherent.personne
+                reservation.adherent = adherent
+                detail_reservation_form = DetailReservationInlineFormSet(request.POST, instance=reservation)
+                if detail_reservation_form.is_valid():
+                    #Enregistrement après validation
+                    reservation.save()
+                    detail_reservation_form.save()
 
-                return HttpResponse("Reservation effectué avec succès")
+                    return redirect('listeReservation')
             
-    else:
-        reservation_form = FormulaireReservation()
-        detail_reservation_form = DetailReservationInlineFormSet()
+        else:
+            reservation_form = FormulaireReservation()
+            detail_reservation_form = DetailReservationInlineFormSet()
         
-    context = {
-        'reservation_form' : reservation_form,
-        'detail_reservation_form' : detail_reservation_form
-    }
-    return render(request, 'adherents/reservation.html', context)
+        context = {
+            'reservation_form' : reservation_form,
+            'detail_reservation_form' : detail_reservation_form
+        }
+        return render(request, 'adherents/reservation.html', context)
+    else:
+        return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
 
-
+@login_required
 def liste_reservation(request):
     reservation_avec_details = Reservation.objects.prefetch_related('ligneReservation').filter(adherent=request.user.compteadherent.personne).order_by('-date_reservation')
 
+    print("Test")
     paginator = Paginator(reservation_avec_details, 5)
 
     page_num = request.GET.get('page')
     page_obj = paginator.get_page(page_num)
 
-    context = {"page_obj" : page_obj}
+    context = {
+        "page_obj" : page_obj,
+        "nbre_reservation" : reservation_avec_details.count()
+    }
 
     return render(request, "adherents/liste_reservation.html", context)

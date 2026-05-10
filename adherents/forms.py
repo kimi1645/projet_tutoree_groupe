@@ -127,6 +127,10 @@ class DetailReservationFormSet(BaseInlineFormSet):
                             f"Stock insuffisant pour le livre '{livre_reserver.titre}'"
                             f"- Stock disponible : {livre_reserver.quantite}"
                         )
+                else:
+                    raise forms.ValidationError(
+                        "La quantité doit supérieur ou égale à 1"
+                    )
 
 
                 valid_forms_count += 1

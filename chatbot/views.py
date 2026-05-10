@@ -1,15 +1,16 @@
 from django.shortcuts import render
-import os
+from django.http import HttpResponseForbidden
 import json
 from groq import Groq
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from bibliotheque.utils import get_user_role
 from livres.models import Livre
 from adherents.models import Reservation
 from emprunts.models import Emprunt
 from decouple import config
 from .models import HistoriqueChat
-
+from django.contrib.auth.decorators import login_required
 
 #Récupération de toutes les données nécessaires 
 def get_context_bibliotheque(adherent):
@@ -52,7 +53,10 @@ def get_context_bibliotheque(adherent):
 
 
 @csrf_exempt
+@login_required
 def chatbot(request):
+    if get_user_role(request.user)['role'] == 'bibliothecaire':
+        return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
     if request.method == 'POST':
         data     = json.loads(request.body)
         question = data.get('message', '')#Récupération du message
