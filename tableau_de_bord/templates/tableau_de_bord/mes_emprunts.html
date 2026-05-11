@@ -5,14 +5,14 @@
 {% endblock %}
 
 {% block content %}
+  <h4>Les emprunts non retournés</h4>
   <table class="table">
     <thead>
       <tr>
         <td>Réservation numero</td>
         <td>Effectué par</td>
-        <td>date_emprunt</td>
-        <td>date_limite</td>
-        <td>date_retour</td>
+        <td>Emprunté le</td>
+        <td>A retourné avant</td>
         <td>statut</td>
       </tr>
     </thead>
@@ -23,7 +23,6 @@
           <td>{{ emp.bibliothecaire }}</td>
           <td>{{ emp.date_emprunt }}</td>
           <td>{{ emp.date_limite }}</td>
-          <td>{{ emp.date_retour }}</td>
           <td>{{ emp.statut }}</td>
         </tr>
       {% endfor %}

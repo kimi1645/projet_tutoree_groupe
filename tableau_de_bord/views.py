@@ -202,7 +202,8 @@ def mes_emprunts(request):
     if get_user_role(request.user)['role'] == 'bibliothecaire':
         return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
     else:
-        emprunts = Emprunt.objects.filter(reservation__adherent__compteadherent__user=request.user, statut='Retourné')
+        emprunts = Emprunt.objects.filter(reservation__adherent__compteadherent__user=request.user, statut='Non retourné')
+        print(emprunts)
         return render(request, "tableau_de_bord/mes_emprunts.html", {
             'emprunts' : emprunts
         })
