@@ -12,7 +12,9 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
     <link rel="stylesheet" href="{%static 'css/hover.css' %}">
+     <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
   </head>
   <body>
@@ -90,7 +92,7 @@
         {% block content %}
 
         {% endblock %}
-        <a class="nav-link d-flex justify-content-center align-items-start p-2" class="" href="{% url 'chatbot' %}">Chatbot</a>
+        <a class="chatbot-btn bg-primary"  href="{% url 'chatbot' %}"><img src="{% static 'icone/user-regular-full.svg' %}" alt="" width="30" height="30" class="icon" /></a>
                 
       </main>
 
