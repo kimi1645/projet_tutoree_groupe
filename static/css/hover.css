@@ -1,0 +1,19 @@
+.chatbot-btn{
+    position: fixed;
+    bottom: 70px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+
+    
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-size: 3px;
+    
+
+
+}
