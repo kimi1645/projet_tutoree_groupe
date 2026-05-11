@@ -64,4 +64,26 @@
       background-color: rgb(250, 250, 250);
     }
   </style>
+
+  <script>
+    // Afficher le loader lors de la soumission du formulaire
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.querySelector('form[method="post"]')
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          // Attendre la validation avant d'afficher le loader
+          setTimeout(() => {
+            // Marquer qu'on vient de se connecter
+            sessionStorage.setItem('showLoadingAnimation', 'true')
+    
+            // Afficher le loader
+            const loader = document.getElementById('loaderOverlay')
+            if (loader) {
+              loader.classList.add('active')
+            }
+          }, 100)
+        })
+      }
+    })
+  </script>
 {% endblock %}
