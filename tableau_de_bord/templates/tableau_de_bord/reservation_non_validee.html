@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+  {% load static %}
   <div class="mb-4">
     <h1 class="h3 mb-1">Réservations en attente</h1>
     <p class="text-muted-soft">Validez ou consultez les détails des réservations en attente.</p>
@@ -40,7 +41,7 @@
                 </td>
                 {% if user_role.role == 'bibliothecaire' %}
                   <td>
-                    <a href="{% url 'validerReservation' reservation.id %}" class="btn btn-sm btn-info">Valider</a>
+                    <a href="{% url 'validerReservation' reservation.id %}" class="btn"><img src="{% static 'icone/check.svg' %}" alt="" width="20" /></a>
                     <a href="{% url 'refuserReservation' reservation.id %}">Réfusé</a>
                   </td>
                 {% endif %}

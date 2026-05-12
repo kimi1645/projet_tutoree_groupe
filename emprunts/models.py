@@ -10,12 +10,16 @@ STATUT = [
     ('Retourné', 'Retourné'),
     ('Non retourné', 'Non retourné')
 ]
+
+def date_limite_par_defaut():
+    return datetime.now() + timedelta(days=15)
+
 class Emprunt(models.Model):
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
     bibliothecaire = models.ForeignKey(User,on_delete=models.CASCADE)
     date_emprunt = models.DateField(auto_now_add=True)
     #datetime.now() + timedelta(days=15)  === Limitena 15 jours aorinanle nangalany azy ny date limite
-    date_limite = models.DateField(default=datetime.now() + timedelta(days=15))
+    date_limite = models.DateField(default=date_limite_par_defaut)
     date_retour = models.DateField(blank=True, null=True)
     statut = models.CharField(choices=STATUT, default='Non retourné')
     remarque = models.TextField(blank=True, default=" ")

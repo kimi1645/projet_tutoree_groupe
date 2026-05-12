@@ -162,7 +162,7 @@ def liste_reservation_avalidee(request):
     else:
         return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
 
-    
+@login_required    
 def valider_reservation(request, id):
     if get_user_role(request.user)['role'] == 'bibliothecaire':
 
@@ -175,6 +175,8 @@ def valider_reservation(request, id):
 
 
         for detail in  reservation.ligneReservation.all():
+            detail.livre.quantite -= detail.quantite
+            detail.livre.save()
             Emprunt.objects.create(
                 reservation = reservation,
                 bibliothecaire = request.user
