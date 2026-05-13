@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['projet-tutoree-groupe-1.onrender.com', '127.0.0.1']
+ALLOWED_HOSTS = ['https://projet-tutoree-groupe-1.onrender.com', '127.0.0.1']
 
 
 # Application definition
