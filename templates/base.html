@@ -104,7 +104,7 @@
         {% block content %}
 
         {% endblock %}
-        <a class="chatbot-btn bg-primary chatbot" draggable="true" href="{% url 'chatbot' %}"><img src="{% static 'icone/icons8-chatbot-48.png' %}" alt="" width="30" height="30" class="icon" /></a>
+        <a class="chatbot-btn bg-primary chatbot" id="chatbot" draggable="true" href="{% url 'chatbot' %}"><img src="{% static 'icone/icons8-chatbot-48.png' %}" alt="" width="30" height="30" class="icon" /></a>
       </main>
 
       <footer class="text-center text-muted py-4 border-top mt-auto bg-white">
@@ -170,6 +170,34 @@
           localStorage.setItem('libraryTheme', nextTheme)
         })
       })
+      const chatbot =
+      document.getElementById("chatbot");
+
+      let isDragging = false;
+      chatbot.addEventListener("mousedown", () =>
+       {
+        isDragging =true;
+       }
+        );
+      document.addEventListener("mousemove", (e)=>
+        {
+        if(!isDragging) return;
+        chatbot.style.left =e.pageX - 30 + "px";
+         chatbot.style.top =e.pageY - 30 + "px";
+
+         chatbot.style.right ="auto";
+         chatbot.style.bottom ="auto";
+
+       } 
+      );
+       document.addEventListener("mouseup", () =>
+      {
+        isDragging =false;
+      }
+      );
+      chatbot.addEventListener("click", () => {
+        window.location.href = "/chat/";
+      });
     </script>
   </body>
 </html>
