@@ -116,49 +116,74 @@
         </div>
       </div>
     </div>
-    <div class="m-4">
+    <div class=" row m-4">
+      
+     <div class="col-lg-6">
       {% if emprunts_en_cours %}
-     
-      <h4>Emprunts en cours</h4>
-      <table class="table table-bordered">
-    <thead>
-      <tr>
-        <td>Réservation numero</td>
-        <td>Effectué par</td>
-        <td>date_emprunt</td>
-        <td>date_limite</td>
-        <td>date_retour</td>
-        <td>statut</td>
-      </tr>
-    </thead>
-    <tbody>
-      {% for emp in emprunts_en_cours %}
-        <tr>
-          <td>{{ emp.reservation }}</td>
-          <td>{{ emp.bibliothecaire }}</td>
-          <td>{{ emp.date_emprunt }}</td>
-          <td>{{ emp.date_limite }}</td>
-          <td>{{ emp.date_retour }}</td>
-          <td>{{ emp.statut }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-   {% endif %}
-  <div class="border p-3 rounded-4">
-    <h4>Genres lus</h4>
-    
-    {% for genre in genres_lus %}
-    <p>{{genre.reservation__ligneReservation__livre__categorie}}</p>
-    <div class="progress">
-      <div class="progress-bar" role="progressbar" style="width: {{genre.total}}%" aria-valuenow="{{genre.total}}" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-    {% endfor %}
-  </div>
+        <h4>Emprunts en cours</h4>
+        <table class="table table-bordered">
+        <thead>
+          <tr>
+            <td>Réservation numero</td>
+            <td>Effectué par</td>
+            <td>date_emprunt</td>
+            <td>date_limite</td>
+            <td>date_retour</td>
+            <td>statut</td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for emp in emprunts_en_cours %}
+          <tr>
+            <td>{{ emp.reservation }}</td>
+            <td>{{ emp.bibliothecaire }}</td>
+            <td>{{ emp.date_emprunt }}</td>
+            <td>{{ emp.date_limite }}</td>
+            <td>{{ emp.date_retour }}</td>
+            <td>{{ emp.statut }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        </table>
+        {% else %}
+        <div>
+        <p class="text-muted-soft">Pas d'emprunts en cours pour le moment</p>
+        </div>
+        {% endif %}  
+     </div>
+   
+      <div class="col-lg-6">
+        <div class="card card-soft p-4 h-80">
+          <h2 class="h5 mb-3">Genre lus</h2>
+          <canvas id="genre_lus"></canvas>
+        </div>
+      </div>
     </div>
   {% endif %}
 
   <script>
+    new Chart(document.getElementById('genre_lus'), {
+      type: 'bar',
+      data: {
+        labels: {{ label_genre_lus | safe }},
+        datasets: [{
+          label: 'Nombre d\'emprunts',
+          data: {{ data_genre_lus | safe }},
+          backgroundColor: ['#6366f1', '#374f81', '#ec4899', '#f97316', '#14b8a6', '#3b82f6']
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          x: { beginAtZero: true, grid: { color: '#e2e8f0' } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+
+    
     new Chart(document.getElementById('livre_par_categorie'), {
       type: 'bar',
       data: {
@@ -263,5 +288,10 @@
         interaction: { intersect: false }
       }
     });
+
+
+
+    
+
   </script>
 {% endblock %}

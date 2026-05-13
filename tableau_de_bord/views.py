@@ -126,6 +126,9 @@ def index_dashboard(request):
 
         #Genres lu adhérent
         genres_lus = Emprunt.objects.values('reservation__ligneReservation__livre__categorie').annotate(total=Count('id')).order_by('-total')[:5]
+        label_genre_lus = [e['reservation__ligneReservation__livre__categorie'] for e in genres_lus]
+        data_genre_lus = [e['total'] for e in genres_lus]
+
         return render(request, 'tableau_de_bord/index.html', {
             'labels_livre_categorie' : json.dumps(labels_livre_categorie),
             'data_livre_categorie' : json.dumps(data_livre_categorie),
@@ -143,7 +146,8 @@ def index_dashboard(request):
             'categorie_populaire' : categorie_populaire,
             'livres_en_retard' : livres_en_retard,
             'emprunts_en_cours' : emprunts_en_cours,
-            'genres_lus' : genres_lus
+            'label_genre_lus' : json.dumps(label_genre_lus),
+            'data_genre_lus': json.dumps(data_genre_lus),
         })
     except:
         return render(request, 'tableau_de_bord/index.html')
