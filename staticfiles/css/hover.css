@@ -1,0 +1,32 @@
+.chatbot-btn{
+    position: fixed;
+    bottom: 70px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+
+    
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-size: 3px;
+     cursor: pointer;
+     z-index: 1000;
+   animation: bounce 1.5s infinite;
+
+}
+@keyframes bounce {
+    0%{
+        transform: translateY(0);
+    }
+     50%{
+        transform: translateY(-10px);
+    }
+     100%{
+        transform: translateY(0);
+    }
+    
+}
