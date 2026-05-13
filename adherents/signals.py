@@ -5,5 +5,5 @@ from .models import Adherent
 @receiver(post_delete, sender=Adherent)
 def supprimer_user_adherent(sender, instance, **kwargs):
     if instance.user:
-        instance.user.delete()
+        instance.compteadherent.user.delete()
         

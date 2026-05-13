@@ -10,54 +10,56 @@
   {% if request.user.is_authenticated %}
     <p>Bonjour, {{ request.user.username }}</p>
   {% else %}
-    <div class="row justify-content-center">
-      <div class="col-lg-5 col-md-7">
-        <div class="card card-soft shadow-sm border-0">
-          <div class="card-body p-5">
-            <div class="d-flex align-items-center justify-content-center">
-              <h2 class="card-title mb-3 text-muted-soft">Connexion</h2>
+    <section class="vh-100">
+      <div class="row justify-content-center h-100">
+        <div class="col-lg-5 col-md-7">
+          <div class="card card-soft shadow-sm border-0">
+            <div class="card-body p-5">
+              <div class="d-flex align-items-center justify-content-center">
+                <h2 class="card-title mb-3 text-muted-soft">Connexion</h2>
+              </div>
+
+              <p class="text-muted-soft mb-4">Accédez à votre espace adhérent ou bibliothécaire.</p>
+
+              <form method="post" class="row g-3">
+                {% csrf_token %}
+                <div class="col-12 text-muted-soft mb-3 p-2">
+                  <!-- <div class="form-label text-center">{{ form.username.label_tag }}</div> -->
+                  <div class="d-flex align-items-center">
+                    <img src="{% static 'icone/user-regular-full.svg' %}" alt="" width="30" height="30" class="icon" />
+                    {{ form.username }}
+                  </div>
+                </div>
+                <div class="col-12 text-muted-soft mb-3 p-2">
+                  <!-- <div class="form-label text-center">{{ form.password.label_tag }}</div> -->
+                  <div class="d-flex align-items-center">
+                    <img src="{% static 'icone/key-solid-full.svg' %}" alt="" width="30" height="30" class="icon" />
+                    {{ form.password }}
+                  </div>
+                </div>
+                <div class="col-12 d-flex justify-content-between align-items-center">
+                  <a class="link-primary" href="{% url 'password_reset' %}">Mot de passe oublié ?</a>
+                  <button type="submit" class="btn btn-primary">Se connecter</button>
+                </div>
+              </form>
+
+              {% if form.errors %}
+                <div class="alert alert-danger mt-4 form-alert">
+                  {% for error in form.non_field_errors %}
+                    <p class="mb-1">{{ error }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              <hr class="my-4" />
+              <p class="mb-0 text-muted-soft">
+                Vous n'avez pas encore de compte adhérent ? <a href="{% url 'verification' %}">Cliquez ici</a>.
+              </p>
             </div>
-
-            <p class="text-muted-soft mb-4">Accédez à votre espace adhérent ou bibliothécaire.</p>
-
-            <form method="post" class="row g-3">
-              {% csrf_token %}
-              <div class="col-12 text-muted-soft">
-                <div class="form-label text-center">{{ form.username.label_tag }}</div>
-                <div class="d-flex align-items-center">
-                  <img src="{% static 'icone/user-regular-full.svg' %}" alt="" width="30" height="30" class="icon" />
-                  {{ form.username }}
-                </div>
-              </div>
-              <div class="col-12 text-muted-soft">
-                <div class="form-label text-center">{{ form.password.label_tag }}</div>
-                <div class="d-flex align-items-center">
-                  <img src="{% static 'icone/key-solid-full.svg' %}" alt="" width="30" height="30" class="icon" />
-                  {{ form.password }}
-                </div>
-              </div>
-              <div class="col-12 d-flex justify-content-between align-items-center">
-                <a class="link-primary" href="{% url 'password_reset' %}">Mot de passe oublié ?</a>
-                <button type="submit" class="btn btn-primary">Se connecter</button>
-              </div>
-            </form>
-
-            {% if form.errors %}
-              <div class="alert alert-danger mt-4 form-alert">
-                {% for error in form.non_field_errors %}
-                  <p class="mb-1">{{ error }}</p>
-                {% endfor %}
-              </div>
-            {% endif %}
-
-            <hr class="my-4" />
-            <p class="mb-0 text-muted-soft">
-              Vous n'avez pas encore de compte adhérent ? <a href="{% url 'verification' %}">Cliquez ici</a>.
-            </p>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   {% endif %}
   <style>
     .icon {

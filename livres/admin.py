@@ -13,7 +13,7 @@ class LivreRessource(resources.ModelResource):
 
     # Méthode pour corriger les données avant insertion
     def before_import_row(self, row, **kwargs):
-        titre_sale=row.get-('titre')
+        titre_sale=row.get('titre')
         if titre_sale:
             titre_propre = re.sub(r'([a-z])([A-Z])', r'\1 \2', titre_sale)
             row['titre'] = titre_propre

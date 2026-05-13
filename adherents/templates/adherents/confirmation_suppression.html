@@ -5,18 +5,28 @@
 {% endblock %}
 
 {% block content %}
-  <div>
-    <div>
-      <p>{{ adherent.matricule }}</p>
-      <p>{{ adherent.nom }}</p>
-      <p>{{ adherent.prenom }}</p>
-      <p>{{ adherent.email }}</p>
-      <p>{{ adherent.fonction }}</p>
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card card-soft shadow-sm border-0">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3">Confirmation de suppression</h2>
+          <p class="text-muted-soft mb-4">Vous voulez vraiment supprimer l'adhérent suivant ?</p>
+    
+          <ul class="list-group mb-4">
+            <li class="list-group-item">Matricule : {{ adherent.matricule }}</li>
+            <li class="list-group-item">Nom : {{ adherent.nom }}</li>
+            <li class="list-group-item">Prénom : {{ adherent.prenom }}</li>
+            <li class="list-group-item">Email : {{ adherent.email }}</li>
+            <li class="list-group-item">Fonction : {{ adherent.fonctions }}</li>
+          </ul>
+          </div>
+            <form method="post" class="text-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger ">Supprimer</button>
+            <a href="{% url 'listeAdherent' %}" class="btn btn-secondary">Annuler</a>
+            </form>
+          </div>
+        </div>
     </div>
-    <form method="post">
-      {% csrf_token %}
-      <button type="submit">Supprimer</button>
-      <a href="#">Annuler</a>
-    </form>
   </div>
 {% endblock %}

@@ -28,6 +28,8 @@
               <tr>
                 <th>Réservation</th>
                 <th>Responsable</th>
+                <th>Emprunteur</th>
+                <th>Livre emprunté avec quantité</th>
                 <th>Date d'emprunt</th>
                 <th>Date limite</th>
                 <th>Date de retour</th>
@@ -41,6 +43,14 @@
                 <tr>
                   <td>{{ emp.reservation }}</td>
                   <td>{{ emp.bibliothecaire }}</td>
+                  <td>{{ emp.reservation.adherent }}</td>
+                  <td>
+                    <ul class="mb-0">
+                      {% for detail in emp.reservation.ligneReservation.all %}
+                        <li>{{ detail.livre }} (Quantité: {{ detail.quantite }})</li>
+                      {% endfor %}
+                    </ul>
+                  </td>
                   <td>{{ emp.date_emprunt }}</td>
                   <td>{{ emp.date_limite }}</td>
                   <td>

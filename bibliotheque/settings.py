@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 from decouple import config
 
@@ -140,8 +141,13 @@ LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = 'dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
-#EMAIL_HOST_PASSWORD  = config('EMAIL_HOST_PASSWORD')
-#DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+EMAIL_HOST_PASSWORD  = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 
 #on execute chaque jour à 8h00
@@ -151,3 +157,14 @@ CRONJOBS = [
     ('0 12 * * *', 'bibliotheque.tasks.envoyer_rappels'),
     ('0 18 * * *', 'bibliotheque.tasks.envoyer_rappels'),
 ] 
+
+
+#Expiration des cookies lorsque l'utilisateur ferme son navigateur
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+#Déconnexion automatique après 1h de connexion
+AUTO_LOGOUT = {
+    'IDLE_TIME' : timedelta(minutes=60),
+    'SESSION_TIME' : timedelta(minutes=60),
+    'REDIRECT_TO_LOGIN_IMMEDIATELY' : True
+}

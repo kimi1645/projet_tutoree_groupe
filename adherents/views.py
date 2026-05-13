@@ -75,7 +75,7 @@ def supprimer_adherent(request, id):
 def recherche(request) :
     query = request.GET.get('q','').strip()
     if not query:
-        return redirect('liste_livre')
+        return redirect('listeAdherent')
     else:
         nbre_resultat = 0
         adherent_lookup = Q(matricule__icontains=query) | Q(nom__icontains=query) | Q(prenom__icontains=query)|Q(fonctions__icontains=query) 
@@ -98,7 +98,7 @@ def verification(request):
             request.session['otp_code'] = otp
             request.session['otp_email'] = email
             send_mail(
-                subject='Rappel- Retour de livre',
+                subject='Vérification via code OTP',
                 message=f'Bonjour voici votre code OTP {otp}',
                 from_email='stockalerte85@gmail.com',
                 recipient_list=[email]
@@ -190,17 +190,20 @@ def reservation_avec_detail(request):
 
 @login_required
 def liste_reservation(request):
-    reservation_avec_details = Reservation.objects.prefetch_related('ligneReservation').filter(adherent=request.user.compteadherent.personne).order_by('-date_reservation')
+    if get_user_role(request.user)['role'] == 'bibliothecaire':
+        return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
+    else:
+        reservation_avec_details = Reservation.objects.prefetch_related('ligneReservation').filter(adherent=request.user.compteadherent.personne).order_by('-date_reservation')
 
-    print("Test")
-    paginator = Paginator(reservation_avec_details, 5)
 
-    page_num = request.GET.get('page')
-    page_obj = paginator.get_page(page_num)
+        paginator = Paginator(reservation_avec_details, 5)
 
-    context = {
-        "page_obj" : page_obj,
-        "nbre_reservation" : reservation_avec_details.count()
-    }
+        page_num = request.GET.get('page')
+        page_obj = paginator.get_page(page_num)
 
-    return render(request, "adherents/liste_reservation.html", context)
+        context = {
+            "page_obj" : page_obj,
+            "nbre_reservation" : reservation_avec_details.count()
+        }
+
+        return render(request, "adherents/liste_reservation.html", context)
