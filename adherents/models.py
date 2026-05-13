@@ -20,7 +20,7 @@ class Adherent(models.Model):
 
 
     def __str__(self):
-        return f"{self.matricule} -- {self.nom}"
+        return f"{self.matricule} -- {self.nom} {self.prenom}"
 
 
 

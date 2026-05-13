@@ -10,7 +10,7 @@ from .forms import EnregistrementRetourEmprunt
 
 @login_required
 def liste_emprunt(request):
-    emprunts = Emprunt.objects.all().order_by('-date_emprunt')[:10]#On limite la liste à dix
+    emprunts = Emprunt.objects.filter(statut='Non retourné').select_related('reservation__adherent', 'bibliothecaire').prefetch_related('reservation__ligneReservation__livre').order_by('-date_emprunt')[:10]#On limite la liste à dix
     return render (request, 'emprunts/list.html' ,{"emprunts" : emprunts })
 
 
