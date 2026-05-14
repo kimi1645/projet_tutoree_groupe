@@ -34,9 +34,9 @@ def dashboard_stats(request):
 
         #Emprunts en cours
         #Filtration des emprunts avec attribus statut = 'Non retourné
-        emprunts_en_cours = Emprunt.objects.filter(statut='Non retourné').count()
+        emprunts_non_retournee = Emprunt.objects.filter(statut='Non retourné').count()
 
-
+        
         role_utilisateur = get_user_role(request.user)
         if request.user.is_authenticated:
             total_reservation_effectue = 0
@@ -56,7 +56,7 @@ def dashboard_stats(request):
                 'titres_differents' : titres_differents,
                 'total_adherents' : total_adherents,
                 'membres_actifs' : membres_actifs,
-                'emprunts_en_cours' : emprunts_en_cours,
+                'emprunts_non_retourne' : emprunts_non_retournee,
                 'total_reservation_effectuee' :total_reservation_effectue,
                 'reservation_validee' : reservation_validee,
                 'reservation_refusee' : reservation_refusee,
@@ -66,6 +66,7 @@ def dashboard_stats(request):
                 'emprunt_actif' :emprunt_actif,
             
             }
+        
         return {
             'default' : None
         }

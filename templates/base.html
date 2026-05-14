@@ -88,6 +88,36 @@
             </div>
           </div>
         </header>
+        {% if user_role.role == 'bibliothecaire' %}
+          <section class="d-flex flex-row-lg">
+            <div class="card col-4 m-2 p-3">
+              <h3>Total livre</h3>
+              <p>
+                <strong>{{ total_livres }}</strong>
+              </p>
+              <p>
+                <b>{{ titres_differents }}</b> titres différents
+              </p>
+            </div>
+            <div class="card col-4 m-2 p-3">
+              <h3>Adhérents</h3>
+              <p>
+                <b>{{ total_adherents }}</b>
+              </p>
+              <p>
+                <b>{{ membres_actifs }}</b>
+                membres actifs
+              </p>
+            </div>
+            <div class="card col-4 m-2 p-3">
+              <h3>Emprunts en cours</h3>
+              <p>
+                <b>{{ emprunts_non_retourne }}</b>
+                Non retounés
+              </p>
+            </div>
+          </section>
+        {% endif %}
       {% endif %}
       <main class="container-fluid py-4 flex-grow-1">
         {% if messages %}

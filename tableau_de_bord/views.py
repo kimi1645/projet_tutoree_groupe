@@ -177,14 +177,14 @@ def valider_reservation(request, id):
         reservation.date_validation = timezone.now().date()
         reservation.save()
 
-
-        for detail in  reservation.ligneReservation.all():
+        for detail in reservation.ligneReservation.all():
             detail.livre.quantite -= detail.quantite
             detail.livre.save()
-            Emprunt.objects.create(
-                reservation = reservation,
-                bibliothecaire = request.user
-            )
+
+        Emprunt.objects.create(
+            reservation=reservation,
+            bibliothecaire=request.user
+        )
         return redirect('listeReservationAValidee')
     else:
         return HttpResponseForbidden("Vous n'avez pas la permission nécessaire pour cette page.")
