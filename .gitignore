@@ -5,4 +5,5 @@ plan_bibliotheque_django.html
 *.sqlite3
 .env
 Li.csv
+Li_corrigé.csv
 test.csv
