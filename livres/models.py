@@ -2,12 +2,19 @@ from django.db import models
 
 
 CATEGORIE = [
-    ('Math','Mathématique'),
+    ('Mathématique','Mathématique'),
     ('Physique', 'Physique'),
     ('Littérature','Littérature'),
     ('Droit', 'Droit'),
     ("Memoire de fin d'étude", "Memoire de fin d'étude"),
-    ('Thèse','Thèse')
+    ('Thèse','Thèse'),
+    ('Biologie', 'Biologie'),
+    ('Science de la Vie et de la Terre','Science de la Vie et de la Terre'),
+    ('Mécanique','Mécanique'),
+    ('Science agronomique','Science agronomique'),
+    ('Mécanique','Mécanique'),
+    ('Production Animale','Production Animale')
+
 ]
 
 
@@ -16,7 +23,7 @@ class Livre(models.Model):
     reference = models.CharField(primary_key=True)
     titre = models.CharField(max_length=150)
     auteur = models.CharField(max_length=150)
-    categorie = models.CharField(choices=CATEGORIE)
+    categorie = models.CharField(max_length=150, choices=CATEGORIE)
     quantite = models.PositiveIntegerField(default=1)
 
 

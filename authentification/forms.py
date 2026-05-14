@@ -7,10 +7,12 @@ class FormulaireAuthentification(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={
         'placeholder' : 'Entrez votre nom d\'utilisateur ici',
        
-        'class' : 'form-control'
+        'class' : 'form-control',
+        'id' : 'username'
     }),label="Nom d'utilisateur")
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class' : 'form-control',
+        'id':'password',
         'placeholder' : 'Entrez votre mots de passe'
     }), label="Mots de passe")
 

@@ -62,7 +62,7 @@
       <div class="col">
         <div class="card card-soft p-4 h-100">
           <h3 class="h6 text-uppercase text-primary">Catégorie populaire</h3>
-          <p class="display-6 mb-1">{{ categorie_populaire }}</p>
+          <p class="display-6 mb-1">{% if categorie_populaire %}{{ categorie_populaire }}{% endif %}</p>
           <p class="text-muted-soft">Livres les plus empruntés</p>
         </div>
       </div>
