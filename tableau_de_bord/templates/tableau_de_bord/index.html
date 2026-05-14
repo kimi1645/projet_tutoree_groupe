@@ -62,7 +62,9 @@
       <div class="col">
         <div class="card card-soft p-4 h-100">
           <h3 class="h6 text-uppercase text-primary">Catégorie populaire</h3>
-          <p class="display-6 mb-1">{% if categorie_populaire %}{{ categorie_populaire }}{% endif %}</p>
+          <p class="display-6 mb-1">
+            {% if categorie_populaire %}{{ categorie_populaire }}{% endif %}
+          </p>
           <p class="text-muted-soft">Livres les plus empruntés</p>
         </div>
       </div>
@@ -75,86 +77,102 @@
       </div>
     </div>
   {% else %}
-    <div class="card card-soft p-4 shadow-sm">
-      <h1 class="h3 mb-3">Bienvenue</h1>
-      <p class="text-muted-soft">Accédez à vos réservations, consultez les livres disponibles et suivez l’avancement de vos emprunts.</p>
-      <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-2 mt-2">
-      <div class="col">
-        <div class="card card-soft p-4 h-100">
-          <h3 class="h6 text-uppercase text-primary">Emprunts actif</h3>
-          <p class="display-6 mb-2">{{emprunt_actif}}</p>
-          <p class="text-muted-soft"></p>
+    <div class="mb-4">
+      <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+        <div>
+          <h1 class="h3 mb-2">Bienvenue sur votre espace adhérent</h1>
+          <p class="text-muted-soft mb-0">Accédez à vos réservations, consultez vos emprunts actifs et suivez les dates de retour importantes.</p>
+        </div>
+        <span class="badge bg-primary fs-6 py-2 px-3">Espace adhérent</span>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-sm-6 col-xl-3">
+        <div class="card card-soft p-3 h-100">
+          <h3 class="h6 text-uppercase text-primary mb-2">Emprunts en cours</h3>
+          <p class="display-6 mb-2">{{ emprunt_actif }}</p>
+          <p class="text-muted-soft mb-0">Livres actuellement empruntés</p>
         </div>
       </div>
-      <div class="col">
-        <div class="card card-soft p-4 h-100">
-          <h3 class="h6 text-uppercase text-primary">Réservations</h3>
-          <p class="display-6 mb-2">{{total_reservation_effectuee}}</p>
-          <p class="text-muted-soft">{{reservation_validee}} validées</p>
-          <p class="text-muted-soft">{{reservation_validee}} validées</p>
-          <p class="text-muted-soft">{{reservation_en_attente}} en attente</p>
+      <div class="col-sm-6 col-xl-3">
+        <div class="card card-soft p-3 h-100">
+          <h3 class="h6 text-uppercase text-primary mb-2">Réservations</h3>
+          <p class="display-6 mb-2">{{ total_reservation_effectuee }}</p>
+          <p class="text-muted-soft mb-0">{{ reservation_validee }} validées · {{ reservation_en_attente }} en attente</p>
         </div>
       </div>
-      <div class="col">
-        <div class="card card-soft p-4 h-100">
-          <h3 class="h6 text-uppercase text-primary">Retour imminent</h3>
+      <div class="col-sm-6 col-xl-3">
+        <div class="card card-soft p-3 h-100">
+          <h3 class="h6 text-uppercase text-primary mb-2">Retour imminent</h3>
           <p class="display-6 mb-1">
             {% if retour_imminent %}
-            {{retour_imminent}} dans 3 jours
-            {%else%}
-            Pas de retour imminent
+              {{ retour_imminent }} dans 3 jours
+            {% else %}
+              Aucun retour imminent
             {% endif %}
           </p>
-          <p class="text-muted-soft"></p>
+          <p class="text-muted-soft mb-0">Surveillez vos dates limites.</p>
         </div>
       </div>
-      <div class="col">
-        <div class="card card-soft p-4 h-100">
-          <h3 class="h6 text-uppercase text-primary">total lu cette année</h3>
-          <p class="display-6 mb-2">{{total_livre_lu}}</p>
-          <p class="text-muted-soft"></p>
+      <div class="col-sm-6 col-xl-3">
+        <div class="card card-soft p-3 h-100">
+          <h3 class="h6 text-uppercase text-primary mb-2">Total lu cette année</h3>
+          <p class="display-6 mb-2">{{ total_livre_lu }}</p>
+          <p class="text-muted-soft mb-0">Livres empruntés et retournés.</p>
         </div>
       </div>
     </div>
-    <div class=" row m-4">
-      
-     <div class="col-lg-6">
-      {% if emprunts_en_cours %}
-        <h4>Emprunts en cours</h4>
-        <table class="table table-bordered">
-        <thead>
-          <tr>
-            <td>Réservation numero</td>
-            <td>Effectué par</td>
-            <td>date_emprunt</td>
-            <td>date_limite</td>
-            <td>date_retour</td>
-            <td>statut</td>
-          </tr>
-        </thead>
-        <tbody>
-          {% for emp in emprunts_en_cours %}
-          <tr>
-            <td>{{ emp.reservation }}</td>
-            <td>{{ emp.bibliothecaire }}</td>
-            <td>{{ emp.date_emprunt }}</td>
-            <td>{{ emp.date_limite }}</td>
-            <td>{{ emp.date_retour }}</td>
-            <td>{{ emp.statut }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-        </table>
-        {% else %}
-        <div>
-        <p class="text-muted-soft">Pas d'emprunts en cours pour le moment</p>
+
+    <div class="row g-4">
+      <div class="col-xl-7">
+        <div class="card card-soft p-4 h-100">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+              <h2 class="h5 mb-1">Emprunts en cours</h2>
+              <p class="text-muted-soft mb-0">Suivez vos livres et préparez les retours.</p>
+            </div>
+            <span class="badge bg-info">{{ emprunt_actif }} actif{{ emprunt_actif|pluralize }}</span>
+          </div>
+          {% if emprunts_en_cours %}
+            <div class="table-responsive">
+              <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Réservation</th>
+                    <th>Bibliothécaire</th>
+                    <th>Emprunté le</th>
+                    <th>Retour prévu</th>
+                    <th>Statut</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for emp in emprunts_en_cours %}
+                    <tr>
+                      <td>{{ emp.reservation }}</td>
+                      <td>{{ emp.bibliothecaire }}</td>
+                      <td>{{ emp.date_emprunt }}</td>
+                      <td>{{ emp.date_limite }}</td>
+                      <td>
+                        <span class="badge text-dark">{{ emp.statut }}</span>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="py-5 text-center">
+              <p class="mb-2">Vous n’avez aucun emprunt en cours pour le moment.</p>
+              <p class="text-muted-soft mb-0">Découvrez de nouveaux livres ou passez une réservation.</p>
+            </div>
+          {% endif %}
         </div>
-        {% endif %}  
-     </div>
-   
-      <div class="col-lg-6">
-        <div class="card card-soft p-4 h-80">
-          <h2 class="h5 mb-3">Genre lus</h2>
+      </div>
+
+      <div class="col-xl-5">
+        <div class="card card-soft p-4 h-100">
+          <h2 class="h5 mb-3">Genres les plus lus</h2>
           <canvas id="genre_lus"></canvas>
         </div>
       </div>

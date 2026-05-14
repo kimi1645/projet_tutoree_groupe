@@ -42,27 +42,47 @@ def recherche(request):
     query = request.GET.get('q','').strip()
     if not query:
         return redirect('listeEmprunt')
-    resultats_livres=Livre.objects.none()
-    resultats_emprunts=Emprunt.objects.none()
-    resultats_adherents=Adherent.objects.none()
-    # si c'est une seule lettre cad commence par...
-    if len(query) ==1:
-        lookup_livres =Q(reference__istartswith=query)|Q(titre__istartswith=query)
-            
     
-    # Si la requête est une phrase
+    # Conditions de recherche
+    #Si l'utilisateur ne saisie qu'un seul caractère
+    if len(query) == 1:
+        lookup_livres = Q(reference__istartswith=query) | Q(titre__istartswith=query)
+        lookup_adherents = Q(nom__istartswith=query) | Q(prenom__istartswith=query)
+    #S'il saisie plus d'un caractère
     else:
-        lookup_livres=Q(reference__icontains=query)|Q(titre__icontains=query)|Q(auteur__icontains=query)
-                
-        resultats_livres=Livre.objects.filter(lookup_livres)
-        lookup_adherents =Q(nom__icontains=query)|Q(prenom__icontains=query)
-        resultats_adherents=Adherent.objects.filter(lookup_adherents)
-
-        resultats_emprunts=Emprunt.objects.filter(Q(reservation__ligneReservation__livre__reference__in=resultats_livres)|Q(reservation__adherent__nom__in=resultats_adherents)|Q(reservation__adherent__prenom__in=resultats_adherents))
+        lookup_livres = Q(reference__icontains=query) | Q(titre__icontains=query) | Q(auteur__icontains=query)
+        lookup_adherents = Q(nom__icontains=query) | Q(prenom__icontains=query) | Q(matricule__icontains=query)
+    
+    # Filtrer les emprunts par:
+    # - Référence/titre du livre OU
+    # - Nom/prénom/matricule de l'adhérent OU
+    # - Numéro de réservation (si query est un entier)
+    filter_conditions = (
+        Q(reservation__ligneReservation__livre__reference__icontains=query) |
+        Q(reservation__ligneReservation__livre__titre__icontains=query) |
+        Q(reservation__ligneReservation__livre__auteur__icontains=query) |
+        Q(reservation__adherent__nom__icontains=query) |
+        Q(reservation__adherent__prenom__icontains=query) |
+        Q(reservation__adherent__matricule__icontains=query)
+    )
+    
+    # Ajouter la recherche par ID de réservation si query est un entier
+    try:
+        reservation_id = int(query)
+        filter_conditions |= Q(reservation__id=reservation_id)
+    except ValueError:
+        pass
+    
+    resultats_emprunts = Emprunt.objects.filter(filter_conditions).select_related(
+        'reservation__adherent', 'bibliothecaire'
+    ).prefetch_related(
+        'reservation__ligneReservation__livre'#Accèderaux livres liés à l'emprunt
+    ).distinct().order_by('-date_emprunt')
+    
     context = {
-        'emprunts':resultats_emprunts,
-        'query' : query,
-        'nb_resultat' : resultats_emprunts.count()
+        'emprunts': resultats_emprunts,
+        'query': query,
+        'nb_resultat': resultats_emprunts.count()
     }
     return render(request,'emprunts/list.html',context)
     

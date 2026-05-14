@@ -8,8 +8,8 @@
   {% load static %}
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
     <form method="GET" action="{% url 'search' %}" class="d-flex gap-2 w-100 w-md-auto">
-      <input type="text" name="q" value="{{ query }}" placeholder="Recherche emprunt..." autocomplete="off" class="form-control" />
-      <button type="submit" class="btn btn-secondary"><img src="{% static 'icone/loupe.png' %}" alt="Rechercher" width="20" height="20" /></button>
+      <input type="text" name="q" value="{{ query }}" placeholder="Recherche emprunt par numero de reservation , emprunteur ou livre emprunté" autocomplete="off" class="form-control" />
+      <button type="submit" class="btn"><img src="{% static 'icone/loupe.png' %}" alt="Rechercher" width="20" height="20" /></button>
     </form>
   </div>
 
