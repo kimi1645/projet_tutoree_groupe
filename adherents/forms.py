@@ -28,23 +28,28 @@ class FormulaireAjoutAdherent(forms.ModelForm):
 class FormulaireInscription(forms.Form):
     matricule = forms.CharField(label='Matricule', 
                                 widget=forms.TextInput(attrs={
-                                    'class' : 'form-control'
+                                    'class' : 'form-control border',
+                                    'placeholder' : 'ex: 3243'
                                 }))
     username = forms.CharField(label='Nom d\'utilisateur', 
                                widget=forms.TextInput(attrs={
-                                   'class' : 'form-control'
+                                   'class' : 'form-control border',
+                                   'placeholder' : 'Rakoto'
                                }))
     code_otp = forms.CharField(label="Code OTP", 
                                widget=forms.TextInput(attrs={
-                                   'class' : 'form-control'
+                                   'class' : 'form-control border',
+                                   'placeholder' : 'XXXXX'
                                }))
     password = forms.CharField(label='Mots de passe',
                                widget=forms.PasswordInput(attrs={
-                                   'class' : 'form-control'
+                                   'class' : 'form-control border',
+                                   'placeholder' : 'Composé au moins 8 caractères(0-9,*/%,a-z,A-Z)'
                                }))
     password2 = forms.CharField(label='Confirmer mots de passe',
                                 widget=forms.PasswordInput(attrs={
-                                    'class' : 'form-control'
+                                    'class' : 'form-control border',
+                                    'placeholder' : 'Entrez le même mots de passe ici'
                                 }))
                                 
    
@@ -75,7 +80,8 @@ class FormulaireInscription(forms.Form):
 class VerificationParEmail(forms.Form):
     email = forms.EmailField(label="Entrez votre adresse email",
                              widget=forms.EmailInput(attrs={
-                                 'class' : 'form-control'
+                                 'class' : 'form-control border',
+                                 'id' : 'email'
                              }))
     
 
